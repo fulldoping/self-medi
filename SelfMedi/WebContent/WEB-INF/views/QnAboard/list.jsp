@@ -33,7 +33,7 @@ $(document).ready(function() {
 <c:forEach items="${boardList }" var="board">
 <tr>
 	<td>${board.boardNo }</td>
-	<td>${board.userId }</td>
+	<td>${board.userNick }</td>
 	<td>
 		<a href="/QnA/view?boardNo=${board.boardNo }">
 		${board.boardTitle }

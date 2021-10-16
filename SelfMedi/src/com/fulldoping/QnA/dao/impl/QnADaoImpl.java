@@ -72,6 +72,7 @@ public class QnADaoImpl implements QnADao {
 				q.setBoardNo( rs.getInt("boardno") );
 				q.setUserNo(rs.getInt("userno"));
 				q.setUserId( rs.getString("userid") );
+				q.setUserNick( rs.getString("usernick") );
 				q.setBoardTitle( rs.getString("boardtitle") );
 				q.setBoardDate( rs.getDate("boarddate") );
 				q.setBoardContent( rs.getString("boardcontent") );
@@ -104,7 +105,7 @@ public class QnADaoImpl implements QnADao {
 		sql += "SELECT * FROM (";
 		sql += "	SELECT rownum rnum, B.* FROM (";
 		sql += "		SELECT";
-		sql += "			boardno, userno, userid, boardtitle, boarddate";
+		sql += "			boardno, userno, userid, usernick, boardtitle, boarddate";
 		sql += "			, boardcontent, declare, hit";
 		sql += "		FROM QNA";
 		sql += "		ORDER BY boardno DESC";
@@ -129,6 +130,7 @@ public class QnADaoImpl implements QnADao {
 				q.setBoardNo( rs.getInt("boardno") );
 				q.setUserNo(rs.getInt("userno"));
 				q.setUserId( rs.getString("userid") );
+				q.setUserNick( rs.getString("usernick") );
 				q.setBoardTitle( rs.getString("boardtitle") );
 				q.setBoardDate( rs.getDate("boarddate") );
 				q.setBoardContent( rs.getString("boardcontent") );
@@ -201,6 +203,7 @@ public class QnADaoImpl implements QnADao {
 				viewBoard.setBoardNo( rs.getInt("boardno") );
 				viewBoard.setUserNo(rs.getInt("userno"));
 				viewBoard.setUserId( rs.getString("userid") );
+				viewBoard.setUserId( rs.getString("userNick") );
 				viewBoard.setBoardTitle( rs.getString("boardtitle") );
 				viewBoard.setBoardDate( rs.getDate("boarddate") );
 				viewBoard.setBoardContent( rs.getString("boardcontent") );
@@ -284,8 +287,8 @@ public class QnADaoImpl implements QnADao {
 	@Override
 	public int insert(Connection conn, QnA board) {
 		String sql = "";
-		sql += "INSERT INTO QNA(BOARDNO, USERNO, USERID, BOARDTITLE, BOARDDATE, BOARDCONTENT, DECLARE, HIT)";
-		sql += " VALUES (?, ?, ?, ?, SYSDATE, ?, 'N', 0)";
+		sql += "INSERT INTO QNA(BOARDNO, USERNO, USERID, USERNICK,BOARDTITLE, BOARDDATE, BOARDCONTENT, DECLARE, HIT)";
+		sql += " VALUES (?, ?, ?, ?, ?, SYSDATE, ?, 'N', 0)";
 				
 		int res = 0;
 		
@@ -296,8 +299,9 @@ public class QnADaoImpl implements QnADao {
 			ps.setInt(1, board.getBoardNo());
 			ps.setInt(2, board.getUserNo());
 			ps.setString(3, board.getUserId());
-			ps.setString(4, board.getBoardTitle());
-			ps.setString(5, board.getBoardContent());
+			ps.setString(4, board.getUserNick());	
+			ps.setString(5, board.getBoardTitle());
+			ps.setString(6, board.getBoardContent());
 
 			res = ps.executeUpdate();
 			
@@ -492,6 +496,35 @@ public class QnADaoImpl implements QnADao {
 	}
 	
 	@Override
+	public int deleteFile(Connection conn, int boardNo) {
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE qnafile";
+		sql += " WHERE boardno = ?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, boardNo);
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+	
+	@Override
 	public List<QnAComments> selectAllComments(Connection conn) {
 		//SQL 작성
 		String sql = "";
@@ -513,7 +546,8 @@ public class QnADaoImpl implements QnADao {
 				//결과값 한 행 처리
 				q.setCommentNo(rs.getInt("commentno"));
 				q.setBoardNo( rs.getInt("boardno") );
-				q.setUserId(rs.getString("userId"));
+				q.setUserNo(rs.getInt("userNo"));
+				q.setUserNick(rs.getString("userNick"));
 				q.setCommentContent(rs.getString("commentcontent"));
 				q.setCommentDate(rs.getDate("commentdate"));
 				
@@ -534,10 +568,55 @@ public class QnADaoImpl implements QnADao {
 	}
 	
 	@Override
+	public List<QnAComments> selectAllComments(Connection conn, int boardno) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM QNACOMMENTS";
+		sql += " WHERE boardno = ?";
+		sql += " ORDER BY commentno DESC";
+		
+		//결과 저장할 List
+		List<QnAComments> commentList = new ArrayList<>();
+		
+		try {
+			ps = conn.prepareStatement(sql); //SQL수행 객체
+			ps.setInt(1, boardno);
+			
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				QnAComments q = new QnAComments(); //결과값 저장 객체
+				
+				//결과값 한 행 처리
+				q.setCommentNo(rs.getInt("commentno"));
+				q.setBoardNo( rs.getInt("boardno") );
+				q.setUserNo(rs.getInt("userNo"));
+				q.setUserNick(rs.getString("userNick"));
+				q.setCommentContent(rs.getString("commentcontent"));
+				q.setCommentDate(rs.getDate("commentdate"));
+
+				//리스트에 결과값 저장
+				commentList.add(q);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		//최종 결과 반환
+		return commentList;
+	}
+	
+	@Override
 	public int commentsinsert(Connection conn, QnAComments comment) {
 		String sql = "";
-		sql += "INSERT INTO QNACOMMENTS(COMMENTNO, BOARDNO, USERID, COMMENTCONTENT, COMMENTDATE)";
-		sql += " VALUES (?, ?, ?, ?, SYSDATE)";
+		sql += "INSERT INTO QNACOMMENTS(COMMENTNO, BOARDNO, USERNO, USERNICK, COMMENTCONTENT, COMMENTDATE)";
+		sql += " VALUES (?, ?, ?, ?,?, SYSDATE)";
 				
 		int res = 0;
 		
@@ -547,8 +626,9 @@ public class QnADaoImpl implements QnADao {
 			
 			ps.setInt(1, comment.getCommentNo());
 			ps.setInt(2, comment.getBoardNo());
-			ps.setString(3, comment.getUserId());
-			ps.setString(4, comment.getCommentContent());
+			ps.setInt(3, comment.getUserNo());
+			ps.setString(4, comment.getUserNick());
+			ps.setString(5, comment.getCommentContent());
 			
 
 			res = ps.executeUpdate();
@@ -565,7 +645,7 @@ public class QnADaoImpl implements QnADao {
 	@Override
 	public int selectNextCommentno(Connection conn) {
 		String sql = "";
-		sql += "SELECT qnacomment_seq.nextval FROM dual";
+		sql += "SELECT qnacomments_seq.nextval FROM dual";
 		
 		//결과 저장 변수
 		int nextCommentno = 0;
@@ -588,19 +668,169 @@ public class QnADaoImpl implements QnADao {
 		
 		return nextCommentno;
 	}
-
+	
+	@Override
+	public QnAComments selectcommentBycommentno(Connection conn, QnAComments commentno) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM qnacomments";
+		sql += " WHERE commentno = ?";
+		
+		//결과 저장할 Board객체
+		QnAComments viewcomment = null;
+		
+		try {
+			ps = conn.prepareStatement(sql); //SQL수행 객체
+			
+			ps.setInt(1, commentno.getCommentNo()); //조회할 게시글 번호 적용
+			
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				viewcomment = new QnAComments(); //결과값 저장 객체
+				
+				//결과값 한 행 처리
+				//결과값 한 행 처리
+				viewcomment.setCommentNo( rs.getInt("commentno") );
+				viewcomment.setBoardNo( rs.getInt("boardno") );
+				viewcomment.setUserNo(rs.getInt("userNo"));
+				viewcomment.setUserNick(rs.getString("userNick"));
+				viewcomment.setCommentContent(rs.getString("commentcontent"));
+				viewcomment.setCommentDate(rs.getDate("commentdate"));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		//최종 결과 반환
+		return viewcomment;
+	}
+	
 	@Override
 	public int commentsupdate(Connection conn, QnAComments comment) {
-		// TODO Auto-generated method stub
-		return 0;
+		//다음 댓글 번호 조회 쿼리
+		String sql = "";
+		sql += "UPDATE QNACOMMENTS";
+		sql += " SET COMMENTCONTENT=?, COMMENTDATE=SYSDATE"; 
+		sql += " WHERE COMMENTNO=?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, comment.getCommentContent());
+			ps.setInt(2, comment.getCommentNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
 	}
 
 	@Override
 	public int commentsdelete(Connection conn, QnAComments comment) {
-		// TODO Auto-generated method stub
-		return 0;
+		//다음 댓글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE qnacomments";
+		sql += " WHERE commentno = ?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, comment.getCommentNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+	
+	@Override
+	public int commentsdelete(Connection conn, QnA board) {
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE qnacomments";
+		sql += " WHERE boardno = ?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, board.getBoardNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
 	}
 
+	@Override
+	public String getUserNick(Connection conn, Integer userNo) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT usernick FROM member"; 
+		sql += " WHERE userno = ?";
+		
+		String userNick = null;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, userNo);
+			
+			rs = ps.executeQuery();
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				userNick = rs.getString("usernick");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		return userNick;
+	}
+	
 	@Override
 	public int declare(Connection conn) {
 		// TODO Auto-generated method stub

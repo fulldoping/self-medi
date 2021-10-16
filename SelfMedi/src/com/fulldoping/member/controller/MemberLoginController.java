@@ -47,7 +47,7 @@ public class MemberLoginController extends HttpServlet {
 	         session.setAttribute("login", login);
 	         session.setAttribute("userNo", member.getUserNo()); //사용자를 서로 구분할 수 있는 PK인 userNo로 잡아야한다
 	         session.setAttribute("userNick", member.getUserNick());
-	         			
+	         session.setAttribute("userKind", member.getUserKind());
 	      }
 	      
 	      //메인페이지로 리다이렉트

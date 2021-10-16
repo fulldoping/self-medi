@@ -1,17 +1,19 @@
 package com.fulldoping.QnA.dto;
 
+import java.sql.Connection;
 import java.sql.Date;
 
 public class QnAComments {
 	private int commentNo;
 	private int boardNo;
-	private String userId;
+	private int userNo;
+	private String userNick;
 	private String commentContent;
 	private Date commentDate;
 	
 	@Override
 	public String toString() {
-		return "QnAComment=[ commentNo=" + commentNo + ", boardNo" + boardNo + ", userId=" + userId +", commentContent=" + commentContent + ", commentDate=" + commentDate + "]";
+		return "QnAComment=[ commentNo=" + commentNo + ", boardNo" + boardNo + ", userNo=" + userNo + ", userNick="+userNick+", commentContent=" + commentContent + ", commentDate=" + commentDate + "]";
 	}
 
 	public int getCommentNo() {
@@ -30,12 +32,20 @@ public class QnAComments {
 		this.boardNo = boardNo;
 	}
 
-	public String getUserId() {
-		return userId;
+	public int getUserNo() {
+		return userNo;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserNo(int userNo) {
+		this.userNo = userNo;
+	}
+
+	public String getUserNick() {
+		return userNick;
+	}
+
+	public void setUserNick(String userNick) {
+		this.userNick = userNick;
 	}
 
 	public String getCommentContent() {

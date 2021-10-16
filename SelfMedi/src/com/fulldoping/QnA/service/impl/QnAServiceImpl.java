@@ -228,6 +228,7 @@ public class QnAServiceImpl implements QnAService {
 			//작성자 userid 입력
 			board.setUserNo((Integer)req.getSession().getAttribute("userNo"));
 			board.setUserId( qnaDao.getUserId(conn, (Integer)req.getSession().getAttribute("userNo")) );
+			board.setUserNick((String) req.getSession().getAttribute("userNick"));
 			board.setBoardNo(boardno); //게시글 번호 입력 (PK)
 			
 			if(board.getBoardTitle()==null || "".equals(board.getBoardTitle())) {
@@ -305,9 +306,8 @@ public class QnAServiceImpl implements QnAService {
 		Iterator<FileItem> iter = items.iterator();
 
 		while( iter.hasNext() ) { //모든 요청 정보 처리
-			FileItem item = iter.next();
-
-			
+			FileItem item = iter.next();	
+		
 			//--- 1) 빈 파일에 대한 처리 ---
 			if( item.getSize() <= 0 ) {
 				continue; //빈 파일은 무시하고 다음 FileItem처리로 넘긴다
@@ -385,9 +385,26 @@ public class QnAServiceImpl implements QnAService {
 		
 		//첨부파일 정보가 있을 경우
 		if(boardFile != null) {
+			
+			if( qnaDao.deleteFile(conn, board) > 0 ) {
+				JDBCTemplate.commit(conn);
+			} else {
+				JDBCTemplate.rollback(conn);
+			}
+			
 			boardFile.setBoardNo(board.getBoardNo()); //게시글 번호 입력 (FK)
 			
 			if( qnaDao.selectinsertFile(conn, boardFile) > 0 ) {
+				JDBCTemplate.commit(conn);
+			} else {
+				JDBCTemplate.rollback(conn);
+			}
+		}
+		
+		//첨부파일 정보가 없을 경우
+		if(boardFile == null) {
+			
+			if( qnaDao.deleteFile(conn, board) > 0 ) {
 				JDBCTemplate.commit(conn);
 			} else {
 				JDBCTemplate.rollback(conn);
@@ -398,6 +415,12 @@ public class QnAServiceImpl implements QnAService {
 	@Override
 	public void delete(QnA board) {
 		Connection conn = JDBCTemplate.getConnection();
+		
+		if( qnaDao.commentsdelete(conn, board) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
 		
 		if( qnaDao.deleteFile(conn, board) > 0 ) {
 			JDBCTemplate.commit(conn);
@@ -417,13 +440,15 @@ public class QnAServiceImpl implements QnAService {
 		return qnaDao.File(JDBCTemplate.getConnection(), viewBoard);
 	}
 	
-	public List<QnAComments> getCommentList() {
+	public List<QnAComments> getCommentList(int boardno) {
+		int boardnum = boardno;
+		
 		//게시글 전체 조회 결과 처리
-		return qnaDao.selectAllComments(JDBCTemplate.getConnection());
+		return qnaDao.selectAllComments(JDBCTemplate.getConnection(), boardnum);
 	}
 	
 	@Override
-	public void commentInsert(HttpServletRequest req) {
+	public int commentInsert(HttpServletRequest req) {
 		
 		QnAComments comment = new QnAComments();
 		Connection conn = JDBCTemplate.getConnection();
@@ -432,24 +457,93 @@ public class QnAServiceImpl implements QnAService {
 		int commentno = qnaDao.selectNextCommentno(conn);
 		comment.setCommentNo(commentno);
 		comment.setBoardNo(Integer.parseInt(req.getParameter("boardNo")));
-		comment.setUserId(qnaDao.getUserId(conn, (Integer)req.getSession().getAttribute("userNo")));
+		comment.setUserNo((Integer)req.getSession().getAttribute("userNo"));
+		comment.setUserNick(qnaDao.getUserNick(conn, (Integer)req.getSession().getAttribute("userNo")));
 		comment.setCommentContent( req.getParameter("content") );
 
 		if( qnaDao.commentsinsert(conn, comment) > 0 ) {
 			JDBCTemplate.commit(conn);
 		} else {
 			JDBCTemplate.rollback(conn);
-		}
+		}		
+		
+		return commentno;
 	}
 
 	@Override
-	public void commentUpdate(HttpServletRequest req) {
+	public QnAComments getCommentno(HttpServletRequest req) {
+
+		QnAComments comment = new QnAComments();
+		Connection conn = JDBCTemplate.getConnection();
 		
+		String param = req.getParameter("commentNo");
+		if(param!=null && !"".equals(param)) {
+			
+			comment.setCommentNo(Integer.parseInt(param));
+		}
+		
+		comment = qnaDao.selectcommentBycommentno(conn, comment);
+		
+		//결과 객체 반환
+		return comment;
+	}
+	
+	@Override
+	public QnAComments getUpdateComment(HttpServletRequest req) {
+		
+		QnAComments comment = new QnAComments();
+		
+		String param = req.getParameter("commentNo");
+		if(param!=null && !"".equals(param)) {
+			comment.setCommentNo(Integer.parseInt(param));
+		}
+
+		comment.setCommentContent( req.getParameter("commentContent") );
+		
+		//결과 객체 반환
+		return comment;
+	}
+	
+	@Override
+	public QnAComments getComment(int commentno) {
+
+		QnAComments comment = new QnAComments();
+		Connection conn = JDBCTemplate.getConnection();
+		
+		comment.setCommentNo(commentno);
+		comment = qnaDao.selectcommentBycommentno(conn, comment);
+		
+		//결과 객체 반환
+		return comment;
+	}
+	
+	@Override
+	public void commentUpdate(HttpServletRequest req) {
+		QnAComments comment = new QnAComments();
+		Connection conn = JDBCTemplate.getConnection();
+		
+		//commentNo 추가
+		comment.setCommentNo(Integer.parseInt(req.getParameter("commentNo")));
+		comment.setCommentContent( req.getParameter("commentContent") );
+
+		
+		System.out.println("Comment Update : " + comment);
+		if( qnaDao.commentsupdate(conn, comment) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}	
 	}
 
 	@Override
 	public void commentDelete(QnAComments comment) {
+		Connection conn = JDBCTemplate.getConnection();
 		
+		if( qnaDao.commentsdelete(conn, comment) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
 	}
 
 	@Override

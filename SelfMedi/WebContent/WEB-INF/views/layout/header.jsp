@@ -9,7 +9,7 @@
 
 <!-- jQuery 2.2.4 -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script type="text/javascript" src="/resources/js/httpRequest.js"></script>
+<script type="text/javascript" src="/resources/se2/js/service/httpRequest.js"></script>
 
 <!-- 부트스트랩 3 -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">

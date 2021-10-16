@@ -28,7 +28,6 @@ function submitContents(elClickedObj) {
 
 <script type="text/javascript">
 $(document).ready(function() {
-	
 	//작성버튼 동작
 	$("#btnWrite").click(function() {
 		

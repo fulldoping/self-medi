@@ -19,9 +19,15 @@
 <!-- 로그인상태 -->
 <c:if test="${not empty login and login }">
    <strong>${userNick }님, 환영합니다</strong><br>
-   <button onclick='location.href="/board/list";'>마이페이지</button>
-   <button onclick='location.href="/QnA/list";'>QnA게시판</button>
+   <button onclick='location.href="/free/list";'>자유게시판</button>
+   <button onclick='location.href="/notice/list";'>공지사항</button>
+   <button onclick='location.href="/QnA/list";'>QnA</button>
+   <button onclick='location.href="/ad/free/list";'>자유게시판 관리자</button>
+   <button onclick='location.href="/ad/notice/list";'>공지사항 관리자</button>
+   <button onclick='location.href="/ad/freedeclare/list";'>신고 게시판</button>
    <button onclick='location.href="/member/logout";'>로그아웃</button>
+   <button onclick='location.href="/logoutTest.jsp";'>로그아웃 테스트JSP</button>
+   
 </c:if>
 
 </div>
