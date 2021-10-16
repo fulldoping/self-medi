@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
+  <display-name>SelfMedi_CompBasket</display-name>
+  <welcome-file-list>
+    <welcome-file>main</welcome-file>
+  </welcome-file-list>
+  
+   <!-- 필터 클래스 등록 -->
+  <filter>
+  	<filter-name>HangulEncodingFilter</filter-name>
+  	<filter-class>com.fulldoping.filter.EncodingFilter</filter-class>
+  </filter>
+  
+  <filter>
+  	<filter-name>AdminFilter</filter-name>
+  	<filter-class>com.fulldoping.filter.AdminLoginFilter</filter-class>
+  </filter>
+  
+  <!-- 필터 클래스가 적용될 URL-Pattern 적용 -->
+  <!-- 위에서 정의한 'filter-name'이름의 필터를 어느 URL에 적용할 것인가.-->
+  <filter-mapping>
+  	<filter-name>HangulEncodingFilter</filter-name> 
+  	<url-pattern>/selftest/write</url-pattern>
+  	<!-- 이외에도 한글인코딩이 필요한 servlet class의 URL주소를 추가로 적어야 한다. -->
+  </filter-mapping>
+  
+  <filter-mapping>
+  	<filter-name>AdminFilter</filter-name> 
+  	<url-pattern>/ad/*</url-pattern>
+  	<!-- 관리자페이지의 모든 서블릿 앞에 /ad를 붙여야 한다. -->
+  </filter-mapping>
+</web-app>
