@@ -46,13 +46,13 @@
 $(document).ready(function() {
 	//목록버튼 동작
 	$("#btnList").click(function() {
-		$(location).attr("href", "/ad/free/list");
+		$(location).attr("href", "/ad/freedeclare/list");
 	});
 		
 	//삭제버튼 동작
 	$("#btnDelete").click(function() {
-		if( confirm("게시글을 삭제하시겠습니까?") ) {
-			$(location).attr("href", "/free/delete?boardNo=${viewFree.boardNo }");
+		if( confirm("신고 사유를 확인하셨습니까?") ) {
+			$(location).attr("href", "/ad/freedeclare/delete?boardNo=${viewFreeDeclare.boardNo }");
 		}
 	});
 	
@@ -94,9 +94,13 @@ $(document).ready(function() {
   <tr>
     <td class="tg-0lax" colspan="10" rowspan="8">${viewFreeDeclare.boardContent }</td>
   </tr>
+</table>
+<table>
   <tr>
   	<td class="tg-c">신고사유</td>
-    <td class="tg-c">ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</td>
+  </tr>	
+  <tr>
+    <td class="tg-c">${viewFreeDeclare.reason }</td>
   </tr>
 </table>
 
@@ -112,7 +116,7 @@ $(document).ready(function() {
 <br>
 <div class="text-center">	
 	<button id="btnList" >목록</button>
-	<button id="btnDelete" >삭제</button>
+	<button id="btnDelete" >확인</button>
 	
 </div>
 

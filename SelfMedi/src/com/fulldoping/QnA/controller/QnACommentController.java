@@ -14,7 +14,7 @@ import com.fulldoping.QnA.dto.QnAComments;
 import com.fulldoping.QnA.service.face.QnAService;
 import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/Comment")
+@WebServlet("/qna/comment")
 public class QnACommentController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -36,7 +36,7 @@ public class QnACommentController extends HttpServlet {
 		
 		
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/comment.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/comment.jsp").forward(req, resp);
     	
     }
 

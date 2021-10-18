@@ -52,7 +52,7 @@ public interface AdFreeDeclareDao {
 	 * @param viewFreeDeclare - 조회할 id를 가진 객체
 	 * @return String - 작성자 닉네임
 	 */
-	public String selectuserNickByUserId(Connection conn, FreeDeclare viewFreeDeclare);
+//	public String selectuserNickByUserId(Connection conn, FreeDeclare viewFreeDeclare);
 
 	/**
 	 * 첨부파일 조회
@@ -62,5 +62,32 @@ public interface AdFreeDeclareDao {
 	 * @return FreeFile - 조회된 첨부파일
 	 */
 	public FreeFile selectFile(Connection conn, FreeDeclare viewFreeDeclare);
+
+	/**
+	 * 게시글에 첨부된 파일 기록 삭제
+	 * 
+	 * @param freeDeclare - 삭제할 게시글번호를 담은 객체
+	 */
+	public int deleteFile(Connection conn, FreeDeclare freeDeclare);
+
+	/**
+	 * 게시글 삭제
+	 * 
+	 * @param freeDeclare - 삭제할 게시글번호를 담은 객체
+	 */
+	public int delete(Connection conn, FreeDeclare freeDeclare);
+
+	/**
+	 * Free 게시글 삭제
+	 * 
+	 * @param freeDeclare - 삭제할 게시글번호를 담은 객체
+	 */
+	public int deletefree(Connection conn, FreeDeclare freeDeclare);
+	/**
+	 * Free 게시글 삭제
+	 * 
+	 * @param freeDeclare - 삭제할 게시글번호를 담은 객체
+	 */
+	public int deletecomments(Connection conn, FreeDeclare freeDeclare);
 
 }

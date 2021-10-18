@@ -131,6 +131,6 @@
 <!-- .container -->
 </div>
 
-<c:import url="/WEB-INF/views/layout/paging.jsp" />
+<c:import url="/WEB-INF/views/layout/pagingnotice.jsp" />
 
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

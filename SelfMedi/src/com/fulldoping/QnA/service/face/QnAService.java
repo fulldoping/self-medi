@@ -145,4 +145,6 @@ public interface QnAService {
 	 */
 	public void declare(HttpServletRequest req);
 
+
+
 }

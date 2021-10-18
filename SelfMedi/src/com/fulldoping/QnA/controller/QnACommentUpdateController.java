@@ -13,7 +13,7 @@ import com.fulldoping.QnA.dto.QnAComments;
 import com.fulldoping.QnA.service.face.QnAService;
 import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/Comment/Update")
+@WebServlet("/qna/comment/update")
 public class QnACommentUpdateController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -23,8 +23,6 @@ public class QnACommentUpdateController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-    	System.out.println("/QnA/Comment/Update [GET]");		
-
     	qnaService.commentUpdate(req);
     	
     	//댓글 전체 조회
@@ -34,7 +32,7 @@ public class QnACommentUpdateController extends HttpServlet {
     	req.setAttribute("commentList", commentList);
     					
     	//VIEW 지정 및 응답 - forward
-    	req.getRequestDispatcher("/WEB-INF/views/QnAboard/comment.jsp").forward(req, resp);
+    	req.getRequestDispatcher("/WEB-INF/views/qnaboard/comment.jsp").forward(req, resp);
 		
     }
     	

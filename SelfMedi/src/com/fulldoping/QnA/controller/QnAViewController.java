@@ -15,7 +15,7 @@ import com.fulldoping.QnA.dto.QnAFile;
 import com.fulldoping.QnA.service.face.QnAService;
 import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/view")
+@WebServlet("/qna/view")
 public class QnAViewController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -33,11 +33,9 @@ public class QnAViewController extends HttpServlet {
 		
 		//조회결과 MODEL값 전달
 		req.setAttribute("viewBoard", viewBoard);
-
 		
 		//닉네임 전달
 		req.setAttribute("nick", qnaService.getNick(viewBoard));
-		System.out.println("첨부파일 조회");
 		
 		//첨부파일 정보 조회
 		QnAFile boardFile = qnaService.getviewFile(viewBoard);
@@ -52,7 +50,7 @@ public class QnAViewController extends HttpServlet {
 		req.setAttribute("commentList", commentList);
 		
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/view.jsp").forward(req, resp);		
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/view.jsp").forward(req, resp);		
 
 	}
 

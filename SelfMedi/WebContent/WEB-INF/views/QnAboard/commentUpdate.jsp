@@ -15,7 +15,7 @@ $(document).ready(function() {
 
 <h3>댓글 수정!</h3>
 
-<form action="/QnA/Comment/Update" method="POST">
+<form action="/qna/Comment/Update" method="POST">
 <input type="hidden" name="commentNo" value="${updateComment.commentNo}" />
 
 ${userNick }<br>

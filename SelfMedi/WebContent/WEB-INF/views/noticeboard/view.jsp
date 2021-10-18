@@ -161,7 +161,9 @@ function copy(val) {
 </tr>
 
 <tr>
-<td class="info">조회수</td><td>${viewNotice.hit }</td>
+			<td class="info">조회수</td><td>${viewNotice.hit }</td>
+			<td class="url"><button onclick="copy('http://localhost:8088/notice/view?boardNo='+${viewNotice.boardNo })">url 복사</button></td>
+			<td class="declare"><button>신고</button></td>
 </tr>
 
 <tr>

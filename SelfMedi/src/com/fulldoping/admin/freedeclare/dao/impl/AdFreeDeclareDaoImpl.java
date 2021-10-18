@@ -30,11 +30,11 @@ public class AdFreeDeclareDaoImpl implements AdFreeDeclareDao{
 		sql += "	SELECT rownum rnum, B.* FROM (";
 		sql += "		SELECT";
 		sql += "			boardNo, userId, userNick, boardTitle";
-		sql += "			, boardDate, reason";
+		sql += "			, boardDate, reason, hit";
 		sql += "		FROM freeDeclare";
 		sql += "		ORDER BY boardNo DESC";
 		sql += "	) B";
-		sql += " ) FREE";
+		sql += " ) freeDeclare";
 		sql += " WHERE rnum BETWEEN ? AND ?";
 		
 		//결과 저장할 List
@@ -56,7 +56,7 @@ public class AdFreeDeclareDaoImpl implements AdFreeDeclareDao{
 				freeDeclare.setUserNick( rs.getString("userNick"));
 				freeDeclare.setBoardTitle( rs.getString("boardTitle"));
 				freeDeclare.setBoardDate( rs.getDate("boardDate"));
-				freeDeclare.setReason( rs.getString("reason"));
+				freeDeclare.setHit( rs.getInt("hit"));
 				
 				//리스트에 결과값 저장
 				freeDeclareList.add(freeDeclare);
@@ -165,6 +165,8 @@ public class AdFreeDeclareDaoImpl implements AdFreeDeclareDao{
 				viewFreeDeclare.setBoardContent( rs.getString("BoardContent"));
 				viewFreeDeclare.setDeclare( rs.getString("declare"));
 				viewFreeDeclare.setHit( rs.getInt("hit"));
+				viewFreeDeclare.setReason( rs.getString("reason"));
+				viewFreeDeclare.setUserNick( rs.getString("userNick"));
 				
 			}
 			
@@ -182,40 +184,40 @@ public class AdFreeDeclareDaoImpl implements AdFreeDeclareDao{
 	}
 	
 	
-	@Override
-	public String selectuserNickByUserId(Connection conn, FreeDeclare viewFreeDeclare) {
-		
-		//SQL 작성
-		String sql = "";
-		sql += "SELECT userNick FROM member";
-		sql += " WHERE userId = ?";
-		
-		//결과 저장할 String 변수
-		String userNick = null;
-		
-		try {
-			ps = conn.prepareStatement(sql); //SQL수행 객체
-			ps.setString(1, viewFreeDeclare.getUserId()); //조회할 id 적용
-			
-			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
-			
-			//조회 결과 처리
-			while(rs.next()) {
-				userNick = rs.getString("userNick");
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			//DB객체 닫기
-			JDBCTemplate.close(rs);
-			JDBCTemplate.close(ps);
-		}
-		
-		//최종 결과 반환
-		return userNick;
-		
-	}
+//	@Override
+//	public String selectuserNickByUserId(Connection conn, FreeDeclare viewFreeDeclare) {
+//		
+//		//SQL 작성
+//		String sql = "";
+//		sql += "SELECT userNick FROM member";
+//		sql += " WHERE userId = ?";
+//		
+//		//결과 저장할 String 변수
+//		String userNick = null;
+//		
+//		try {
+//			ps = conn.prepareStatement(sql); //SQL수행 객체
+//			ps.setString(1, viewFreeDeclare.getUserId()); //조회할 id 적용
+//			
+//			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+//			
+//			//조회 결과 처리
+//			while(rs.next()) {
+//				userNick = rs.getString("userNick");
+//			}
+//			
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			//DB객체 닫기
+//			JDBCTemplate.close(rs);
+//			JDBCTemplate.close(ps);
+//		}
+//		
+//		//최종 결과 반환
+//		return userNick;
+//		
+//	}
 	
 	@Override
 	public int updateHit(Connection conn, FreeDeclare boardNo) {
@@ -244,24 +246,148 @@ public class AdFreeDeclareDaoImpl implements AdFreeDeclareDao{
 		return res;
 	}
 	
+	@Override
+	public int deleteFile(Connection conn, FreeDeclare freeDeclare) {
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE freefile";
+		sql += " WHERE boardno = ?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, freeDeclare.getBoardNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
 	
+	@Override
+	public int delete(Connection conn, FreeDeclare freeDeclare) {
+		
+		System.out.println("TEST FreeDeclare " + freeDeclare);
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE FREEDECLARE";
+		sql += " WHERE boardNo = ? ";
+
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, freeDeclare.getBoardNo());
+			
+			res = ps.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		
+		return res;
+	}
 	
+
+	@Override
+	public int deletecomments(Connection conn, FreeDeclare freeDeclare) {
+		
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE freecomments";
+		sql += " WHERE boardNo = ?";
 	
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, freeDeclare.getBoardNo());
+			
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		
+		return res;
+	}
+	@Override
+	public int deletefree(Connection conn, FreeDeclare freeDeclare) {
+		
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE FREE";
+		sql += " WHERE boardNo = ?";
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, freeDeclare.getBoardNo());
+			
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		
+		return res;
+	}
 }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fulldoping.QnA.dto.QnA;
 import com.fulldoping.QnA.dto.QnAComments;
+import com.fulldoping.QnA.dto.QnADeclare;
 import com.fulldoping.QnA.dto.QnAFile;
 import com.fulldoping.QnA.paging.Paging;
 
@@ -184,13 +185,19 @@ public interface QnADao {
 	 */
 	public int commentsdelete(Connection conn, QnA board);
 	
-	/**
-	 * 게시글 신고 여부
-	 */
-	public int declare(Connection conn);
 
 	/**
 	 * userNo로 userNick을 가져오는 기능
 	 */
 	public String getUserNick(Connection conn, Integer userNo);
+
+	/**
+	 * 신고 기능
+	 * @param conn - DB연결 객체
+	 * @param qnaDeclare - QnA신고
+	 * @return
+	 */
+	public int declare(Connection conn, QnADeclare qnaDeclare);
+
+	
 }

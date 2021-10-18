@@ -26,8 +26,8 @@ public class MemberLoginController extends HttpServlet {
 		
 		//VIEW 지정 - forward
 		req.getRequestDispatcher("/WEB-INF/views/member/login.jsp").forward(req, resp);
-		
 	}
+	
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,17 +45,14 @@ public class MemberLoginController extends HttpServlet {
 	         //세션정보 저장하기
 	         HttpSession session = req.getSession();
 	         session.setAttribute("login", login);
-	         session.setAttribute("userNo", member.getUserNo()); //사용자를 서로 구분할 수 있는 PK인 userNo로 잡아야한다
-	         session.setAttribute("userNick", member.getUserNick());
+	         session.setAttribute("userNo", member.getUserNo());
 	         session.setAttribute("userKind", member.getUserKind());
-	      }
-	      
+	         session.setAttribute("userNick", member.getUserNick());
+	      }      
 	      //메인페이지로 리다이렉트
 	      resp.sendRedirect("/");
 	      
 //	      req.getRequestDispatcher("/WEB-INF/views/main.jsp").forward(req, resp);	
-		
-		
 	}
 
 }

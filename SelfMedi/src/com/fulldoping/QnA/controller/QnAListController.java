@@ -14,7 +14,7 @@ import com.fulldoping.QnA.paging.Paging;
 import com.fulldoping.QnA.service.face.QnAService;
 import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/list")
+@WebServlet("/qna/list")
 public class QnAListController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -35,7 +35,7 @@ public class QnAListController extends HttpServlet {
 		req.setAttribute("paging", paging);
 				
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/list.jsp").forward(req, resp);		
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/list.jsp").forward(req, resp);		
 				
 	}
 

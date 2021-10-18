@@ -14,7 +14,7 @@ import com.fulldoping.QnA.dto.QnAComments;
 import com.fulldoping.QnA.service.face.QnAService;
 import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/Comment/write")
+@WebServlet("/qna/comment/write")
 public class QnACommentWriteController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -22,8 +22,7 @@ public class QnACommentWriteController extends HttpServlet {
     private QnAService qnaService = new QnAServiceImpl(); 
 	
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	System.out.println("/QnA/Comment/write [POST]");
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	
 		req.setCharacterEncoding("utf-8");
 		System.out.print(req.getParameter("boardNo"));
@@ -41,7 +40,7 @@ public class QnACommentWriteController extends HttpServlet {
 		System.out.println(commentList);
 		
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/comment.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/comment.jsp").forward(req, resp);
 		
     }
 

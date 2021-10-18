@@ -10,7 +10,7 @@ $(document).ready(function() {
 	
 	//글쓰기 버튼 누르면 이동
 	$("#btnWrite").click(function() {
-		location.href="/QnA/write";
+		location.href="/qna/write";
 	});
 	
 });
@@ -35,7 +35,7 @@ $(document).ready(function() {
 	<td>${board.boardNo }</td>
 	<td>${board.userNick }</td>
 	<td>
-		<a href="/QnA/view?boardNo=${board.boardNo }">
+		<a href="/qna/view?boardNo=${board.boardNo }">
 		${board.boardTitle }
 		</a>
 	</td>
@@ -53,6 +53,6 @@ $(document).ready(function() {
 <!-- .container -->
 </div>
 
-<c:import url="/WEB-INF/views/layout/paging.jsp" />
+<c:import url="/WEB-INF/views/layout/pagingqna.jsp" />
 
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

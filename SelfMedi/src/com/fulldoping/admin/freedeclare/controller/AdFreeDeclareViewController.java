@@ -36,7 +36,7 @@ public class AdFreeDeclareViewController extends HttpServlet {
 		req.setAttribute("viewFreeDeclare", viewFreeDeclare);
 		
 		//닉네임 전달
-		req.setAttribute("userNick", adFreeDeclareService.getuserNick(viewFreeDeclare));
+//		req.setAttribute("userNick", adFreeDeclareService.getuserNick(viewFreeDeclare));
 		
 		//첨부파일 정보 조회
 		FreeFile freeFile = adFreeDeclareService.viewFile(viewFreeDeclare);

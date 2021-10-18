@@ -13,7 +13,7 @@ import com.fulldoping.QnA.dto.QnAFile;
 import com.fulldoping.QnA.service.face.QnAService;
 import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/update")
+@WebServlet("/qna/update")
 public class QnAUpdateController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -22,7 +22,6 @@ public class QnAUpdateController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("/QnA/update [GET]");
 		//전달파라미터 얻기 - boardno
 		QnA boardno = qnaService.getBoardno(req);
 
@@ -40,18 +39,17 @@ public class QnAUpdateController extends HttpServlet {
 		req.setAttribute("boardFile", boardFile);
 
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/update.jsp").forward(req, resp);		
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/update.jsp").forward(req, resp);		
 
 		
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("/QnA/update [POST]");
 		
 		qnaService.update(req);
 		
-		resp.sendRedirect("/QnA/list");
+		resp.sendRedirect("/qna/list");
 	}
 
 }

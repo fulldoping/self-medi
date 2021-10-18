@@ -92,7 +92,36 @@ public class AdFreeServiceImpl implements AdFreeService {
 	
 	@Override
 	public void delete(Free free) {
-		// TODO Auto-generated method stub
+		
+		
+		
+		Connection conn = JDBCTemplate.getConnection();
+		
+		if( adFreeDao.deleteFile(conn, free) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		if( adFreeDao.delete(conn, free) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		} 
+		
+		if( adFreeDao.deletecomments(conn, free) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		} 
+		
+		if( adFreeDao.deletefree(conn, free) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		} 
+		
+
 		
 	}
 }

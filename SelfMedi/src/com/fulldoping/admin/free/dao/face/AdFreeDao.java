@@ -62,6 +62,38 @@ public interface AdFreeDao {
 	 */
 	public Free selectFreeByBoardNo(Connection conn, Free boardNo);
 
+	/**
+	 * 
+	 * @param conn
+	 * @param free - FreeFile테이블 컬럼 삭제
+	 * @return
+	 */
+	public int deleteFile(Connection conn, Free free);
+
+	/**
+	 * 
+	 * @param conn
+	 * @param free - Free테이블 컬럼 삭제
+	 * @return
+	 */
+	public int delete(Connection conn, Free free);
+
+	/**
+	 * 
+	 * @param conn
+	 * @param free - Free테이블 컬럼 삭제
+	 * @return
+	 */
+	public int deletecomments(Connection conn, Free free);
+
+	/**
+	 * 
+	 * @param conn
+	 * @param free - Free테이블 컬럼 삭제
+	 * @return
+	 */
+	public int deletefree(Connection conn, Free free);
+
 
 
 	

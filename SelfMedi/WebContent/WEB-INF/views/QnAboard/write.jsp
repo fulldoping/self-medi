@@ -58,7 +58,7 @@ $(document).ready(function() {
 <hr>
 
 <div>
-<form action="/QnA/write" method="post" enctype="multipart/form-data">
+<form action="/qna/write" method="post" enctype="multipart/form-data">
 
 <table class="table table-bordered">
 <tr><td class="info">닉네임</td><td>${userNick }</td></tr>

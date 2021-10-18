@@ -77,7 +77,7 @@ $(document).ready(function() {
 <hr>
 
 <div>
-<form action="/QnA/update" method="post" enctype="multipart/form-data">
+<form action="/qna/update" method="post" enctype="multipart/form-data">
 <input type="hidden" name="boardno" value="${updateBoard.boardNo }" />
 
 <table class="table table-bordered">

@@ -594,7 +594,7 @@ public class FreeDaoImpl implements FreeDao {
 	public int commentsinsert(Connection conn, FreeComments comment) {
 		String sql = "";
 		sql += "INSERT INTO FREECOMMENTS(COMMENTNO, BOARDNO, USERNO, USERNICK, COMMENTCONTENT, COMMENTDATE)";
-		sql += " VALUES (?, ?, ?, ?,?, SYSDATE)";
+		sql += " VALUES (?, ?, ?, ?, ?, SYSDATE)";
 				
 		int res = 0;
 		

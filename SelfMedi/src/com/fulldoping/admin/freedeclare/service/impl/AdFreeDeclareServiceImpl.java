@@ -10,10 +10,10 @@ import com.fulldoping.admin.freedeclare.dao.impl.AdFreeDeclareDaoImpl;
 import com.fulldoping.admin.freedeclare.paging.FreeDeclarePaging;
 import com.fulldoping.admin.freedeclare.service.face.AdFreeDeclareService;
 import com.fulldoping.common.JDBCTemplate;
+import com.fulldoping.free.dao.face.FreeDao;
+import com.fulldoping.free.dao.impl.FreeDaoImpl;
 import com.fulldoping.free.dto.FreeDeclare;
 import com.fulldoping.free.dto.FreeFile;
-import com.fulldoping.free.paging.FreePaging;
-import com.fulldoping.notice.dto.Notice;
 
 public class AdFreeDeclareServiceImpl implements AdFreeDeclareService{
 
@@ -85,15 +85,49 @@ public class AdFreeDeclareServiceImpl implements AdFreeDeclareService{
 		return freeDeclare;
 	}
 	
-	@Override
-	public String getuserNick(FreeDeclare viewFreeDeclare) {
-		return adFreeDeclareDao.selectuserNickByUserId(JDBCTemplate.getConnection(), viewFreeDeclare);
-	}
+//	@Override
+//	public String getuserNick(FreeDeclare viewFreeDeclare) {
+//		return adFreeDeclareDao.selectuserNickByUserId(JDBCTemplate.getConnection(), viewFreeDeclare);
+//	}
 	
 	@Override
 	public FreeFile viewFile(FreeDeclare viewFreeDeclare) {
 		return adFreeDeclareDao.selectFile(JDBCTemplate.getConnection(), viewFreeDeclare);
 	}
 	
-	
+	@Override
+	public void delete(FreeDeclare freeDeclare) {
+		
+		
+		
+		Connection conn = JDBCTemplate.getConnection();
+		
+		if( adFreeDeclareDao.deleteFile(conn, freeDeclare) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		if( adFreeDeclareDao.delete(conn, freeDeclare) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		} 
+		
+		if( adFreeDeclareDao.deletecomments(conn, freeDeclare) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		} 
+		
+		if( adFreeDeclareDao.deletefree(conn, freeDeclare) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		} 
+		
+
+		
+	}
+
 }

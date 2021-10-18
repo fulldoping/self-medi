@@ -50,7 +50,7 @@ $(document).ready(function() {
 	});
 	
 	//신고버튼 동작
-	$("#btndeclare").click(function() {
+	$("#btnfreedeclare").click(function() {
 		$(location).attr("href", "/free/declare?boardNo=${viewFree.boardNo }");
 	});
 	
@@ -185,6 +185,16 @@ function appendsendResult() {
 	content.value = "";
 }
 
+//url복사
+function copy(val) {
+ 		var dummy = document.createElement("textarea");
+		 document.body.appendChild(dummy);
+	  dummy.value = val;
+	  dummy.select();
+ 		document.execCommand("copy");
+ 		document.body.removeChild(dummy);
+}
+
 </script>
 
 <div class="container">
@@ -215,6 +225,8 @@ function appendsendResult() {
     <td class="tg-c">${viewFree.userNick }</td>
     <td class="tg-c">조회</td>
     <td class="tg-c">${viewFree.hit }회</td>
+    <td class="url"><button onclick="copy('http://localhost:8088/free/view?boardNo='+${viewFree.boardNo })">url 복사</button></td>
+	<td class="declare"><button>신고</button></td>
     <td class="tg-c"></td>
     <td class="tg-c"></td>
     <td class="tg-b" colspan="2">${viewFree.boardDate }</td>
@@ -237,7 +249,7 @@ function appendsendResult() {
 <br>
 <div class="text-center">	
 	<button id="btnList" >목록</button>
-	<button id="btndeclare" >신고</button>
+	<button id="btnfreedeclare" >신고</button>
 	<c:if test="${viewFree.userNo eq userNo }">
 		<button id="btnUpdate" >수정</button>
 		<button id="btnDelete" >삭제</button>

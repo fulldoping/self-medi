@@ -10,6 +10,7 @@ import java.util.List;
 import com.fulldoping.QnA.dao.face.QnADao;
 import com.fulldoping.QnA.dto.QnA;
 import com.fulldoping.QnA.dto.QnAComments;
+import com.fulldoping.QnA.dto.QnADeclare;
 import com.fulldoping.QnA.dto.QnAFile;
 import com.fulldoping.QnA.paging.Paging;
 import com.fulldoping.common.JDBCTemplate;
@@ -832,9 +833,36 @@ public class QnADaoImpl implements QnADao {
 	}
 	
 	@Override
-	public int declare(Connection conn) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public int declare(Connection conn, QnADeclare qnaDeclare) {
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "INSERT INTO QnADeclare(BOARDNO , USERNO, USERID , BOARDTITLE , BOARDCONTENT, REASON, USERNICK, HIT)";
+		sql += " VALUES ( ? , ?, ?, ?, ?, ?, ?, ?)";
+		
+		int res = 0;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			
+			ps.setInt(1, qnaDeclare.getBoardNo());
+			ps.setInt(2, qnaDeclare.getUserNo());
+			ps.setString(3, qnaDeclare.getUserId());
+			ps.setString(4, qnaDeclare.getBoardTitle());
+			ps.setString(5, qnaDeclare.getBoardContent());
+			ps.setString(6, qnaDeclare.getReason());
+			ps.setString(7, qnaDeclare.getUserNick());
+			ps.setInt(8, qnaDeclare.getHit());
+			
+			res = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(ps);
+		}
 
+		return res;
+	}
+	
 }

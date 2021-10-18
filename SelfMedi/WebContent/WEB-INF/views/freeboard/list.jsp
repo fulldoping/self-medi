@@ -149,6 +149,6 @@ $(document).ready(function() {
 <!-- .container -->
 </div>
 
-<c:import url="/WEB-INF/views/layout/paging.jsp" />
+<c:import url="/WEB-INF/views/layout/pagingfree.jsp" />
 
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

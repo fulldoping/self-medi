@@ -52,7 +52,7 @@ $(document).ready(function() {
 	//삭제버튼 동작
 	$("#btnDelete").click(function() {
 		if( confirm("게시글을 삭제하시겠습니까?") ) {
-			$(location).attr("href", "/free/delete?boardNo=${viewFree.boardNo }");
+			$(location).attr("href", "/ad/free/delete?boardNo=${viewFree.boardNo }");
 		}
 	});
 	

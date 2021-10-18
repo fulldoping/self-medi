@@ -3,26 +3,30 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <c:import url="/WEB-INF/views/layout/header.jsp" />
 
 <script type="text/javascript">
 $(document).ready(function() {
 	//목록버튼 동작
 	$("#btnList").click(function() {
-		$(location).attr("href", "/QnA/list");
+		$(location).attr("href", "/qna/list");
+	});
+	
+	//신고버튼 동작
+	$("#btnDeclare").click(function() {
+		$(location).attr("href", "/qna/declare?boardNo=${viewBoard.boardNo }");
 	});
 
 	//수정버튼 동작
 	$("#btnUpdate").click(function() {
 
-		$(location).attr("href","/QnA/update?boardNo=${viewBoard.boardNo }");
+		$(location).attr("href","/qna/update?boardNo=${viewBoard.boardNo }");
 	});
 
 	//삭제버튼 동작
 	$("#btnDelete").click(function() {
 		if (confirm("게시글을 삭제하시겠습니까?")) {
-			$(location).attr("href","/QnA/delete?boardNo=${viewBoard.boardNo }");
+			$(location).attr("href","/qna/delete?boardNo=${viewBoard.boardNo }");
 		}
 	});
 });
@@ -42,7 +46,7 @@ $(document).ready(function() {
 		console.log(params)
 		
 		//----- URL 구성 ----
-		var url = "/QnA/Comment/Delete/";
+		var url = "/qna/comment/delete/";
 
 		//----- AJAX 요청 전송 -----
 		sendRequest("GET", url, params, callback);
@@ -72,7 +76,7 @@ $(document).ready(function() {
 		console.log(params)
 		
 		//----- URL 구성 ----
-		var url = "/QnA/Comment/Update";
+		var url = "/qna/comment/update";
 
 		//----- AJAX 요청 전송 -----
 		sendRequest("GET", url, params, callback);
@@ -95,14 +99,16 @@ $(document).ready(function() {
 function send() {	
 	//----- 전달 파라미터 구성 -----
 	var boardNo = ${viewBoard.boardNo};
-	var c = content.value;
-	var params = "&boardNo=" + boardNo + "&content=" + c;
+	var content = $("#content").val();
+	var params = "&boardNo=" + boardNo + "&content=" + content;
 
+	console.log(params)
+	
 	//----- URL 구성 ----
-	var url = "/QnA/Comment/write";
+	var url = "/qna/comment/write";
 
 	//----- AJAX 요청 전송 -----
-	sendRequest("POST", url, params, callbacksend);
+	sendRequest("GET", url, params, callbacksend);
 	
 }
 
@@ -184,7 +190,7 @@ function copy(val) {
 		<tr>
 			<td class="info">조회수</td>
 			<td>${viewBoard.hit }</td>
-			<td class="url"><button onclick="copy('http://localhost:8088/QnA/view?boardNo='+${viewBoard.boardNo })">url 복사</button></td>
+			<td class="url"><button onclick="copy('http://localhost:8088/qna/view?boardNo='+${viewBoard.boardNo })">url 복사</button></td>
 			<td class="declare"><button>신고</button></td>
 		</tr>
 
@@ -215,6 +221,7 @@ function copy(val) {
 
 	<div class="text-center">
 		<button id="btnList" class="btn btn-primary">목록</button>
+		<button id="btnDeclare" class="btn btn-declare">신고</button>
 		<c:if test="${viewBoard.userNo eq userNo }">
 			<button id="btnUpdate" class="btn btn-info">수정</button>
 			<button id="btnDelete" class="btn btn-danger">삭제</button>
@@ -247,7 +254,7 @@ function copy(val) {
 	<div>
 		<c:if test="${not empty userNo }">
 			<c:if test="${userKind eq 2}">
-				<label>${nick }<br> <textarea id="content"></textarea>
+				<label>${userNick }<br> <textarea id="content" name="content"></textarea>
 				</label>
 				<br>
 				<button onclick="send();">댓글 달기</button>

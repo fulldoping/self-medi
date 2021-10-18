@@ -242,27 +242,131 @@ public class AdFreeDaoImpl implements AdFreeDao {
 		return res;
 	}
 	
+	@Override
+	public int delete(Connection conn, Free free) {
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE FREEDECLARE";
+		sql += " WHERE boardNo = ? ";
+
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, free.getBoardNo());
+			
+			res = ps.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		
+		return res;
+	}
 	
+	@Override
+	public int deletecomments(Connection conn, Free free) {
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE FREECOMMENTS";
+		sql += " WHERE boardNo = ? ";
+
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, free.getBoardNo());
+			
+			res = ps.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		
+		return res;
+	}
+	@Override
+	public int deleteFile(Connection conn, Free free) {
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE FREEFILE";
+		sql += " WHERE boardNo = ? ";
+
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, free.getBoardNo());
+			
+			res = ps.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		
+		return res;
+	}
+	@Override
+	public int deletefree(Connection conn, Free free) {
+		
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE FREE";
+		sql += " WHERE boardNo = ? ";
+
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, free.getBoardNo());
+			
+			res = ps.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		
+		return res;
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

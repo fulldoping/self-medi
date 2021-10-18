@@ -61,7 +61,7 @@ $(document).ready(function() {
 	<td><input type="hidden" name="boardContent" value="${declareFree.boardContent }"/></td></tr>
 	
 <tr><td class="info" colspan="2">신고사유</td></tr>
-<tr><td colspan="2"><input type="text" id="reason" name="reason" class="reason" size="100px" /></td></tr>
+<tr><td colspan="2"><input type="text" id="reason" name="reason" class="reason" size="100px"/></td></tr>
 </table>
 
 
@@ -83,9 +83,6 @@ $(document).ready(function() {
 </div>
 
 
-
 </div>
-
-<c:import url="/WEB-INF/views/layout/paging.jsp" />
 
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

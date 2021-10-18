@@ -14,7 +14,7 @@ import com.fulldoping.QnA.service.face.QnAService;
 import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 import com.fulldoping.free.dto.FreeComments;
 
-@WebServlet("/QnA/Comment/Delete/")
+@WebServlet("/qna/comment/delete/")
 public class QnACommentDeleteController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
@@ -24,8 +24,6 @@ public class QnACommentDeleteController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	
-		System.out.println("/QnA/Comment/Delete/ [GET]");
-		
 		QnAComments comment = new QnAComments();
 		comment.setCommentNo(Integer.parseInt(req.getParameter("commentNo")));
 		
@@ -38,7 +36,7 @@ public class QnACommentDeleteController extends HttpServlet {
     	req.setAttribute("commentList", commentList);
     					
     	//VIEW 지정 및 응답 - forward
-    	req.getRequestDispatcher("/WEB-INF/views/QnAboard/comment.jsp").forward(req, resp);
+    	req.getRequestDispatcher("/WEB-INF/views/qnaboard/comment.jsp").forward(req, resp);
     }
 	
 }

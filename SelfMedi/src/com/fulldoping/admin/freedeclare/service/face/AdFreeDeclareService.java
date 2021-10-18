@@ -49,10 +49,10 @@ public interface AdFreeDeclareService {
 	/**
 	 * Notice 객체의 id를 이용한 닉네임 조회
 	 * 
-	 * @param viewNotice - 조회할 게시글 정보
+	 * @param viewFree - 조회할 게시글 정보
 	 * @return String - 게시글 작성자의 닉네임
 	 */
-	public String getuserNick(FreeDeclare viewFreeDeclare);
+//	public String getuserNick(FreeDeclare viewFreeDeclare);
 
 	/**
 	 * 첨부파일 정보 조회
@@ -61,6 +61,15 @@ public interface AdFreeDeclareService {
 	 * @return FreeFile - 첨부파일 정보 DTO객체
 	 */
 	public FreeFile viewFile(FreeDeclare viewFreeDeclare);
+
+	/**
+	 * 게시글 삭제
+	 * 
+	 * @param FreeDeclare - 삭제할 게시글 번호를 가진 객체
+	 */
+	public void delete(FreeDeclare freeDeclare);
+
+	
 
 
 }
