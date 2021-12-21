@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fulldoping.admin.product.paging.AdProductPaging;
 import com.fulldoping.admin.product.service.face.AdProductService;
 import com.fulldoping.admin.product.service.impl.AdProductServiceImpl;
 import com.fulldoping.product.dto.ProductInfo;
-import com.fulldoping.util.Paging;
 
 @WebServlet("/ad/product/list")
 public class AdProductListController extends HttpServlet {
@@ -26,7 +26,7 @@ public class AdProductListController extends HttpServlet {
 		
 		System.out.println("[TEST] /ad/product/list [GET]");
 		
-		Paging paging = adProductService.getPaging(req);
+		AdProductPaging paging = adProductService.getPaging(req);
 		
 		List<ProductInfo> productList = adProductService.getProduct(paging);
 		

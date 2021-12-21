@@ -1,4 +1,4 @@
-package com.fulldoping.qna.dto;
+package com.fulldoping.QnA.dto;
 
 import java.sql.Date;
 
@@ -6,6 +6,7 @@ public class QnA {
 	private int boardNo;
 	private int userNo;
 	private String userId;
+	private String userNick;
 	private String boardTitle;
 	private Date boardDate;
 	private String boardContent;
@@ -14,7 +15,7 @@ public class QnA {
 	
 	@Override
 	public String toString() {
-		return "QnA=[boardNO=" + boardNo + ", userNo=" + userNo + ", userId=" + userId + ", boardTitle=" + boardTitle + ", boardDate=" + boardDate + ", boardContent=" + boardContent + ", declare=" + declare +", hit=" + hit +"]";
+		return "QnA=[boardNO=" + boardNo + ", userNo=" + userNo + ", userId=" + userId + ", userNick=" + userNick + ", boardTitle=" + boardTitle + ", boardDate=" + boardDate + ", boardContent=" + boardContent + ", declare=" + declare +", hit=" + hit +"]";
 	}
 
 	public int getBoardNo() {
@@ -41,6 +42,14 @@ public class QnA {
 		this.userId = userId;
 	}
 
+	public String getUserNick() {
+		return userNick;
+	}
+
+	public void setUserNick(String userNick) {
+		this.userNick = userNick;
+	}
+	
 	public String getBoardTitle() {
 		return boardTitle;
 	}
@@ -79,5 +88,6 @@ public class QnA {
 
 	public void setHit(int hit) {
 		this.hit = hit;
-	}
+	}	
+	
 }

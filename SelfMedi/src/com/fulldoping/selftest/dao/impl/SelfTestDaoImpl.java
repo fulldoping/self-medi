@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.fulldoping.selftest.dao.face.SelfTestDao;
 import com.fulldoping.selftest.dto.SelfTest;
 

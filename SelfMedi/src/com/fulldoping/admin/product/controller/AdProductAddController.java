@@ -19,6 +19,7 @@ import com.fulldoping.product.dto.SymptomInfo;
 import com.fulldoping.product.dto.TargetCode;
 import com.fulldoping.product.dto.TargetInfo;
 
+
 @WebServlet("/ad/product/add")
 public class AdProductAddController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -77,6 +78,9 @@ public class AdProductAddController extends HttpServlet {
 		boolean addTargetInfo = adProductService.insertTargetInfo(req, targetInfo);
 		boolean addSymptomInfo = adProductService.insertSymptomInfo(req, symptomInfo);
 		boolean addNutrientInfo = adProductService.insertNutrientInfo(req, nutrientInfo);
+		
+		
+		resp.sendRedirect("/ad/product/add");
 		
 		
 		

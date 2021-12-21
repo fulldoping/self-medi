@@ -1,4 +1,4 @@
-package com.fulldoping.qna.dto;
+package com.fulldoping.QnA.dto;
 
 import java.sql.Date;
 

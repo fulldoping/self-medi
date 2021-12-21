@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fulldoping.notice.dto.Notice;
+import com.fulldoping.notice.paging.NoticePaging;
 import com.fulldoping.notice.service.face.NoticeService;
 import com.fulldoping.notice.service.impl.NoticeServiceImpl;
-import com.fulldoping.paging.Paging;
 
 
 @WebServlet("/notice/list")
@@ -26,7 +26,7 @@ public class NoticeListController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		//요청 파라미터를 전달하여 Paging객체 생성하기
-		Paging paging = noticeService.getPaging(req);
+		NoticePaging paging = noticeService.getPaging(req);
 		
 		//게시글 전체 조회
 		List<Notice> noticeList = noticeService.getList(paging);

@@ -45,4 +45,22 @@ public interface MemberService {
 	 */
 	public void join(Member member);
 
+
+	/** 유저 아이디 찾기
+	 * 
+	 * @param userName - 회원 이름 정보 객체
+	 * @param userEm - 회원 이메일 정보 객체
+	 * @return Member - 조회된 회원 정보
+	 */
+	public Member findUserId(String userName, String userEm);
+	
+	/**
+	 *  유저 비밀번호 찾기
+	 * @param userId - 회원 아이디 정보 객체
+	 * @param userName - 회원 이름 정보 객체
+	 * @param userEm - 회원 이메일 정보 객체
+	 * @return Member - 조회된 회원 정보
+	 */
+	public Member findUserPw(String userId, String userName, String userEm);
+
 }

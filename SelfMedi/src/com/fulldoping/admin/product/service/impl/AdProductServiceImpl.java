@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.fulldoping.admin.product.dao.face.AdProductDao;
 import com.fulldoping.admin.product.dao.impl.AdProductDaoImpl;
+import com.fulldoping.admin.product.paging.AdProductPaging;
 import com.fulldoping.admin.product.service.face.AdProductService;
 import com.fulldoping.common.JDBCTemplate;
 import com.fulldoping.product.dto.NutrientInfo;
@@ -18,8 +19,6 @@ import com.fulldoping.product.dto.SymptomCode;
 import com.fulldoping.product.dto.SymptomInfo;
 import com.fulldoping.product.dto.TargetCode;
 import com.fulldoping.product.dto.TargetInfo;
-import com.fulldoping.product.dto.CompBasket;
-import com.fulldoping.util.Paging;
 
 
 
@@ -29,7 +28,7 @@ public class AdProductServiceImpl implements AdProductService{
 	private AdProductDao adProductDao = new AdProductDaoImpl();
 	
 	@Override
-	public Paging getPaging(HttpServletRequest req) {
+	public AdProductPaging getPaging(HttpServletRequest req) {
 
 		//전달파라미터 curPage 파싱
 		String param = req.getParameter("curPage");
@@ -44,13 +43,13 @@ public class AdProductServiceImpl implements AdProductService{
 		int totalCount = adProductDao.selectCntAll(JDBCTemplate.getConnection());
 		
 		//Paging객체 생성
-		Paging paging = new Paging(totalCount, curPage);
+		AdProductPaging paging = new AdProductPaging(totalCount, curPage);
 		
 		return paging;
 	}
 
 	@Override
-	public List<ProductInfo> getProduct(Paging paging) {
+	public List<ProductInfo> getProduct(AdProductPaging paging) {
 
 		return adProductDao.selectAllProduct(JDBCTemplate.getConnection(), paging);
 	}
@@ -257,4 +256,139 @@ public class AdProductServiceImpl implements AdProductService{
 			}
 
 	}
+
+	@Override
+	public ProductInfo getUpdateProductInfo(long productId) {
+		
+		return adProductDao.selectProductInfo(JDBCTemplate.getConnection(),productId);
+	}
+
+	@Override
+	public int getUpdateTargetInfo(long productId) {
+		return adProductDao.selectTargetInfo(JDBCTemplate.getConnection(),productId);
+	}
+
+	@Override
+	public List<SymptomInfo> getUpdateSymptomInfo(long productId) {
+		return adProductDao.selectSymtomInfo(JDBCTemplate.getConnection(),productId);
+	}
+
+	@Override
+	public List<NutrientInfo> getUpdateNutrientInfo(long productId) {
+		return adProductDao.selectNutrientInfo(JDBCTemplate.getConnection(),productId);
+	}
+
+	@Override
+	public void update(HttpServletRequest req) {
+		Connection conn = JDBCTemplate.getConnection();
+		
+		try {
+			req.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		long productId = Long.parseLong(req.getParameter("productId"));
+		
+		ProductInfo productInfo = new ProductInfo();
+		
+		productInfo.setProductId( Long.parseLong(req.getParameter("productId")));
+		productInfo.setProductName(req.getParameter("productName"));
+		productInfo.setManuCom(req.getParameter("manuCom"));
+		productInfo.setType(req.getParameter("type"));
+		productInfo.setImage(req.getParameter("image"));
+		productInfo.setPurchaseLink(req.getParameter("purchaseLink"));
+		productInfo.setAllergyInfo(req.getParameter("allergyInfo"));
+		productInfo.setStarScore(req.getParameter("starScore"));
+		
+		System.out.println("productInfo"+productInfo);
+		
+		if(adProductDao.updateProductInfo(conn,productInfo)>0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+
+		
+		TargetInfo targetInfo = new TargetInfo();
+		
+		targetInfo.setProductId( Long.parseLong(req.getParameter("productId")));
+		targetInfo.setTargetId( Integer.parseInt(req.getParameter("targetCode")));
+		
+		System.out.println("targetInfo"+targetInfo);
+		
+		
+		if(adProductDao.deleteProductTargetInfo(conn,productId)>0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		if(adProductDao.insertTargetInfo(conn,targetInfo)>0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		
+		String[] symptomCodes = req.getParameterValues("symptomCode");
+		
+		List<SymptomInfo> symptomInfo = new ArrayList<>();
+		
+		
+		for (int i = 0; i<symptomCodes.length; i++) {
+			SymptomInfo s = new SymptomInfo();
+		
+			s.setProductId( Long.parseLong(req.getParameter("productId")));
+			s.setSymptomId(Integer.parseInt(symptomCodes[i]));
+			symptomInfo.add(s);
+		}
+		System.out.println("symptomInfo1"+symptomInfo);
+		
+		if(adProductDao.deleteProductSymptomInfo(conn,productId)>0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		if(adProductDao.insertSymptomInfo(conn,symptomInfo)>0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		
+		String[] nutirentInfoes = req.getParameterValues("nutirentInfo");
+		String[] nutrientContents = req.getParameterValues("nutrientContent");
+				
+		List<NutrientInfo> nutrientInfo = new ArrayList<>();
+		
+		
+		for (int i = 0; i<nutirentInfoes.length; i++) {
+			NutrientInfo n = new NutrientInfo();
+			
+			n.setProductId(Long.parseLong(req.getParameter("productId")));
+			n.setNutId(Integer.parseInt(nutirentInfoes[i]));
+			n.setNutContent(nutrientContents[i]);
+			
+			nutrientInfo.add(n);
+		}
+
+		
+		System.out.println("nutrientInfo"+nutrientInfo);
+		
+		if(adProductDao.deleteProductNutrientInfo(conn,productId)>0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		if(adProductDao.insertNutrientInfo(conn,nutrientInfo)>0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		
+	}
+
+
+
 }

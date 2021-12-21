@@ -22,10 +22,13 @@ public class SelfTestDeleteController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		//테스트코드 - 추후 주석처리
-		System.out.println("/selftest/delete [GET]");
+//		System.out.println("/selftest/delete [GET]");
 		
 		//클라이언트의 동작으로 부터 진단서 번호 전달파라미터 얻기 -> DTO타입으로 저장
 		SelfTest selftestno = selfTestService.getTestno(req);
+		
+		//테스트코드 - 추후 주석처리
+		System.out.println("자가진단 게시판 번호 : " +  selftestno);
 		
 		//DB의 데이터를 삭제하는 코드
 		selfTestService.delete(selftestno);

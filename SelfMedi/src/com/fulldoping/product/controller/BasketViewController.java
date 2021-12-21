@@ -30,14 +30,15 @@ public class BasketViewController extends HttpServlet {
 		if( req.getSession().getAttribute("login") == null
 				|| !(boolean)req.getSession().getAttribute("login") ) {
 			out.println("로그인이 필요합니다.");
-			resp.sendRedirect("/");
+			req.getRequestDispatcher("/WEB-INF/views/notlogin.jsp").forward(req, resp);
+//			resp.sendRedirect("/");
 
 			return;
 		}
 
 		//userNo = 회원번호를 담고 있는 객체
 		int userNo = (int) req.getSession().getAttribute("userNo");
-		System.out.println(userNo);
+//		System.out.println(userNo);
 		
 		//회원번호로 비교함에있는 상품리스트 조회
 		//productId 담고있는 객체
@@ -46,6 +47,7 @@ public class BasketViewController extends HttpServlet {
 //		System.out.println(basketList.get(0).getProductId());
 		
 		List<ProductInfo> productInfo = productService.getProductList(basketList);
+		
 		
 		req.setAttribute("productInfo", productInfo);
 		

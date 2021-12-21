@@ -18,10 +18,11 @@ import com.fulldoping.common.JDBCTemplate;
 import com.fulldoping.free.dao.face.FreeDao;
 import com.fulldoping.free.dao.impl.FreeDaoImpl;
 import com.fulldoping.free.dto.Free;
+import com.fulldoping.free.dto.FreeComments;
 import com.fulldoping.free.dto.FreeDeclare;
 import com.fulldoping.free.dto.FreeFile;
+import com.fulldoping.free.paging.FreePaging;
 import com.fulldoping.free.service.face.FreeService;
-import com.fulldoping.paging.Paging;
 
 
 public class FreeServiceImpl implements FreeService {
@@ -30,14 +31,14 @@ public class FreeServiceImpl implements FreeService {
 	private FreeDao freeDao = new FreeDaoImpl();
 	
 	@Override
-	public List<Free> getList(Paging paging) {
+	public List<Free> getList(FreePaging paging) {
 		
 		//게시글 전체 조회 결과 처리 - 페이징 추가
 		return freeDao.selectAll(JDBCTemplate.getConnection(), paging);
 	}
 	
 	@Override
-	public Paging getPaging(HttpServletRequest req) {
+	public FreePaging getPaging(HttpServletRequest req) {
 		
 		//전달파라미터 curPage 파싱
 		String param = req.getParameter("curPage");
@@ -52,7 +53,7 @@ public class FreeServiceImpl implements FreeService {
 		int totalCount = freeDao.selectCntAll(JDBCTemplate.getConnection());
 		
 		//Paging객체 생성
-		Paging paging = new Paging(totalCount, curPage);
+		FreePaging paging = new FreePaging(totalCount, curPage);
 		
 		return paging;
 	}
@@ -235,6 +236,8 @@ public class FreeServiceImpl implements FreeService {
 //			//작성자 userNo 입력
 			free.setUserNo( (int) req.getSession().getAttribute("userNo") ); //userNO (PK)
 			
+			free.setUserNick( (String) req.getSession().getAttribute("userNick") ); //userNO (PK)
+			
 			//게시글 번호입력
 			free.setBoardNo(boardNo); 
 			
@@ -398,6 +401,7 @@ public class FreeServiceImpl implements FreeService {
 		
 		//게시글 정보가 있을 경우
 		if(free != null) {
+						
 			if( freeDao.update(conn, free) > 0 ) {
 				JDBCTemplate.commit(conn);
 			} else {
@@ -409,7 +413,23 @@ public class FreeServiceImpl implements FreeService {
 		if(freeFile != null) {
 			freeFile.setBoardNo(free.getBoardNo()); //게시글 번호 입력 
 			
+			if( freeDao.deleteFile(conn, free) > 0 ) {
+				JDBCTemplate.commit(conn);
+			} else {
+				JDBCTemplate.rollback(conn);
+			}
+			
 			if( freeDao.insertFile(conn, freeFile) > 0 ) {
+				JDBCTemplate.commit(conn);
+			} else {
+				JDBCTemplate.rollback(conn);
+			}
+		}
+		
+		//첨부파일 정보가 없을 경우
+		if(freeFile == null) {
+			
+			if( freeDao.deleteFile(conn, free) > 0 ) {
 				JDBCTemplate.commit(conn);
 			} else {
 				JDBCTemplate.rollback(conn);
@@ -422,6 +442,12 @@ public class FreeServiceImpl implements FreeService {
 	@Override
 	public void delete(Free free) {
 		Connection conn = JDBCTemplate.getConnection();
+		
+		if( freeDao.commentsdelete(conn, free) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
 		
 		if( freeDao.deleteFile(conn, free) > 0 ) {
 			JDBCTemplate.commit(conn);
@@ -452,14 +478,11 @@ public class FreeServiceImpl implements FreeService {
 		
 		if( !isMultipart ) {
 			System.out.println("[ERROR] multipart/form-data 형식이 아님");
-			
 			return; //write() 메소드 중단
 		}
-
-		//게시글 정보를 저장할 DTO객체 생성
-		FreeDeclare freedeclare = new FreeDeclare();
 		
-		System.out.println("SERVICEIMPL TESTTEST : " + freedeclare);
+		//게시글 정보를 저장할 DTO객체 생성
+		FreeDeclare freeDeclare = new FreeDeclare();
 		
 		//디스크기반 아이템 팩토리
 		DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -511,10 +534,23 @@ public class FreeServiceImpl implements FreeService {
 				}
 
 				//키(name)에 따라서 value저장하기
-				if( "reason".equals(key) ) {
-					freedeclare.setReason( value );
-				} 
-				
+				if( "boardNo".equals(key) ) {
+					freeDeclare.setBoardNo( Integer.parseInt(value) );
+				} else if( "boardTitle".equals(key) ) {
+					freeDeclare.setBoardTitle( value );
+				} else if( "userId".equals(key) ) {
+					freeDeclare.setUserId( value );
+				} else if( "userNo".equals(key) ) {
+					freeDeclare.setUserNo( ( Integer.parseInt(value) ) );
+				}	else if( "boardContent".equals(key) ) {
+					freeDeclare.setBoardContent( value );
+				} else if( "reason".equals(key) ) {
+					freeDeclare.setReason( value );
+				}  else if( "userNick".equals(key) ) {
+					freeDeclare.setUserNick( value );
+				} else if( "hit".equals(key) ) {
+					freeDeclare.setHit( Integer.parseInt(value) );
+				}
 			} //if( item.isFormField() ) end
 		
 			//--- 3) 파일에 대한 처리 ---
@@ -556,28 +592,9 @@ public class FreeServiceImpl implements FreeService {
 		//DB연결 객체
 		Connection conn = JDBCTemplate.getConnection();
 		
-		//게시글 번호 생성 - DAO 이용
-		int boardNo = freeDao.selectNextBoardNo(conn);
-		
 		//게시글 정보가 있을 경우
-		if(freedeclare != null) {
-			
-			//작성자 userId 입력
-//			free.setUserId( (String)req.getSession().getAttribute("userid") );
-			
-			freedeclare.setUserId( freeDao.getUserId(conn, (Integer)req.getSession().getAttribute("userNo")) );
-			
-//			//작성자 userNo 입력
-			freedeclare.setUserNo( (int) req.getSession().getAttribute("userNo") ); //userNO (PK)
-			
-			//게시글 번호입력
-			freedeclare.setBoardNo(boardNo); 
-			
-			if(freedeclare.getBoardTitle()==null || "".equals(freedeclare.getBoardTitle())) {
-				freedeclare.setBoardTitle("(제목없음)");
-			}
-			
-			if( freeDao.declare(conn, freedeclare) > 0 ) {
+		if(freeDeclare != null) {
+			if( freeDao.declare(conn, freeDeclare) > 0 ) {
 				JDBCTemplate.commit(conn);
 			} else {
 				JDBCTemplate.rollback(conn);
@@ -586,7 +603,7 @@ public class FreeServiceImpl implements FreeService {
 		
 		//첨부파일 정보가 있을 경우
 		if(freeFile != null) {
-			freeFile.setBoardNo(boardNo); //게시글 번호 입력
+			freeFile.setBoardNo(freeDeclare.getBoardNo()); //게시글 번호 입력 
 			
 			if( freeDao.insertFile(conn, freeFile) > 0 ) {
 				JDBCTemplate.commit(conn);
@@ -595,10 +612,115 @@ public class FreeServiceImpl implements FreeService {
 			}
 		}
 		
+	}	
+
+	@Override
+	public List<FreeComments> getCommentList(int boardno) {
+		int boardnum = boardno;
+		
+		//게시글 전체 조회 결과 처리
+		return freeDao.selectAllComments(JDBCTemplate.getConnection(), boardnum);
+	}
+	
+	@Override
+	public int commentInsert(HttpServletRequest req) {
+		
+		FreeComments comment = new FreeComments();
+		Connection conn = JDBCTemplate.getConnection();
+		
+		//commentNo 추가
+		int commentno = freeDao.selectNextCommentno(conn);
+		comment.setCommentNo(commentno);
+		comment.setBoardNo(Integer.parseInt(req.getParameter("boardNo")));
+		comment.setUserNo((Integer)req.getSession().getAttribute("userNo"));
+		comment.setUserNick(freeDao.getUserNick(conn, (Integer)req.getSession().getAttribute("userNo")));
+		comment.setCommentContent( req.getParameter("content") );
+
+		if( freeDao.commentsinsert(conn, comment) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}		
+		
+		return commentno;
 	}
 
+	@Override
+	public FreeComments getCommentno(HttpServletRequest req) {
+
+		FreeComments comment = new FreeComments();
+		Connection conn = JDBCTemplate.getConnection();
 		
+		String param = req.getParameter("commentNo");
+		if(param!=null && !"".equals(param)) {
+			
+			comment.setCommentNo(Integer.parseInt(param));
+		}
+		
+		comment = freeDao.selectcommentBycommentno(conn, comment);
+		
+		//결과 객체 반환
+		return comment;
+	}
+	
+	@Override
+	public FreeComments getUpdateComment(HttpServletRequest req) {
+		
+		FreeComments comment = new FreeComments();
+		
+		String param = req.getParameter("commentNo");
+		if(param!=null && !"".equals(param)) {
+			comment.setCommentNo(Integer.parseInt(param));
+		}
+
+		comment.setCommentContent( req.getParameter("commentContent") );
+		
+		//결과 객체 반환
+		return comment;
+	}
+	
+	@Override
+	public FreeComments getComment(int commentno) {
+
+		FreeComments comment = new FreeComments();
+		Connection conn = JDBCTemplate.getConnection();
+		
+		comment.setCommentNo(commentno);
+		comment = freeDao.selectcommentBycommentno(conn, comment);
+		
+		//결과 객체 반환
+		return comment;
+	}
+	
+	@Override
+	public void commentUpdate(HttpServletRequest req) {
+		FreeComments comment = new FreeComments();
+		Connection conn = JDBCTemplate.getConnection();
+		
+		//commentNo 추가
+		comment.setCommentNo(Integer.parseInt(req.getParameter("commentNo")));
+		comment.setCommentContent( req.getParameter("commentContent") );
+
+		
+		System.out.println("Comment Update : " + comment);
+		if( freeDao.commentsupdate(conn, comment) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}	
+	}
+
+	@Override
+	public void commentDelete(FreeComments comment) {
+		Connection conn = JDBCTemplate.getConnection();
+		
+		if( freeDao.commentsdelete(conn, comment) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+	}
+	
 }
-				
 
 	

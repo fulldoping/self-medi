@@ -7,6 +7,7 @@ public class Free {
 	private int boardNo;
 	private int userNo;
 	private String userId;
+	private String userNick;
 	private String boardTitle;
 	private Date boardDate;
 	private String boardContent;
@@ -17,7 +18,7 @@ public class Free {
 	public String toString() {
 		return "Free [boardNo=" + boardNo + ", userNo=" + userNo + ", userId=" + userId + ", boardTitle=" + boardTitle
 				+ ", boardDate=" + boardDate + ", boardContent=" + boardContent + ", declare=" + declare + ", hit="
-				+ hit + "]";
+				+ hit + ", userNick=" + userNick + "]";
 	}
 
 	public int getBoardNo() {
@@ -83,6 +84,15 @@ public class Free {
 	public void setHit(int hit) {
 		this.hit = hit;
 	}
+
+	public String getUserNick() {
+		return userNick;
+	}
+
+	public void setUserNick(String userNick) {
+		this.userNick = userNick;
+	}
+	
 	
 
 	

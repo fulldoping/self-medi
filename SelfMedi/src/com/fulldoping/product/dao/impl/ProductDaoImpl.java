@@ -19,12 +19,11 @@ import com.fulldoping.product.dto.SymptomCode;
 import com.fulldoping.util.PagingProduct;
 
 
-
 public class ProductDaoImpl implements ProductDao {
 
 	private PreparedStatement ps = null; //SQL수행 객체
 	private ResultSet rs = null; //SQL조회 결과 객체
-	
+
 	@Override
 	public int selectCntAll(Connection conn) {
 
@@ -52,230 +51,6 @@ public class ProductDaoImpl implements ProductDao {
 
 		return count;
 	}
-
-	@Override
-	public List<CompBasket> selectByuserNo(Connection conn, int userNo) {
-		//SQL 작성
-		String sql = "";
-		sql += "SELECT * FROM CompBasket";
-		sql += " WHERE userNo = ?";
-		sql += " ORDER BY productId DESC";
-
-		//결과 저장할 List
-		List<CompBasket> basketList = new ArrayList<>();
-
-		try {
-			ps = conn.prepareStatement(sql); //SQL수행 객체
-			ps.setInt(1, userNo);
-
-			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
-
-			//조회 결과 처리
-			while(rs.next()) {
-				CompBasket c = new CompBasket(); //결과값 저장 객체
-
-				//결과값 한 행 처리
-				c.setProductId( rs.getLong("productId") );
-
-				//리스트에 결과값 저장
-				basketList.add(c);
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			//DB객체 닫기
-			JDBCTemplate.close(rs);
-			JDBCTemplate.close(ps);
-		}
-
-		//최종 결과 반환
-		return basketList;
-	}
-
-	@Override
-	public List<ProductInfo> selectBasketProductInfo(Connection conn, List<CompBasket> basketList) {
-		//SQL 작성
-		int sizeoflist,i;
-		String sql = "";
-		sql += "SELECT * FROM PRODUCTINFO";
-		sql += " WHERE productId = ?";
-
-		List<ProductInfo> productInfo = new ArrayList<>();
-		sizeoflist=basketList.size();
-
-		for(i=0;i<sizeoflist; i++) {
-			try {
-				ps = conn.prepareStatement(sql);
-				ps.setLong(1, basketList.get(i).getProductId());
-
-				rs = ps.executeQuery();
-
-				while(rs.next()){
-					ProductInfo p = new ProductInfo();
-
-					//		p.setProductId(rs.getLong("productId") );
-
-
-					//결과 저장할 List
-					//		List<ProductInfo> productInfo = new ArrayList<>();
-					//		sizeoflist=basketList.size();
-					//		List<ProductInfo> p[sizeoflist] ;
-					//		for(i=0;i<sizeoflist;i++)
-					//			p[i]= new ProductInfo(); //결과값 저장 객체
-					//		ps = conn.prepareStatement(sql); //SQL수행 객체
-					//
-					//		for(i=0;i<sizeoflist;i++) {
-					//			try {
-					//				ps.setLong(1, basketList.get(i).getProductId());
-					//
-					//				rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
-					//
-					//				//조회 결과 처리
-					//
-					//				//결과값 한 행 처리
-					p.setProductId( rs.getLong("productId") );
-					p.setProductName( rs.getString("productName") );
-					p.setManuCom( rs.getString("manuCom") );
-					p.setType( rs.getString("type") );
-					p.setImage( rs.getString("image") );
-					p.setPurchaseLink( rs.getString("purchaseLink") );
-					p.setAllergyInfo( rs.getString("allergyInfo") );
-					p.setStarScore( rs.getString("starScore") );
-
-					productInfo.add(p);
-
-				}
-				//
-				//
-				//				//리스트에 결과값 저장
-				//				productInfo.add(p[i]);
-
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				//DB객체 닫기
-				JDBCTemplate.close(rs);
-				JDBCTemplate.close(ps);
-			}
-
-		}
-			//최종 결과 반환
-			return productInfo;
-	}
-
-	@Override
-	public List<ProductInfo> SelectProductInfo(Connection conn, long[] productId) {
-		int sizeoflist,i;
-		String sql = "";
-		sql += "SELECT * FROM PRODUCTINFO";
-		sql += " WHERE productId = ?";
-
-		List<ProductInfo> productInfo = new ArrayList<>();
-		sizeoflist = productId.length;
-
-		System.out.println("sizeoflist : " + sizeoflist);
-
-
-		for(i=0;i<sizeoflist; i++) {
-
-			try {
-				ps = conn.prepareStatement(sql);
-				ps.setLong(1, productId[i]);
-
-				rs = ps.executeQuery();
-
-				while(rs.next()){
-					ProductInfo p = new ProductInfo();
-					p.setProductId( rs.getLong("productId") );
-					p.setProductName( rs.getString("productName") );
-					p.setManuCom( rs.getString("manuCom") );
-					p.setType( rs.getString("type") );
-					p.setImage( rs.getString("image") );
-					p.setPurchaseLink( rs.getString("purchaseLink") );
-					p.setAllergyInfo( rs.getString("allergyInfo") );
-					p.setStarScore( rs.getString("starScore") );
-
-					productInfo.add(p);
-
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				//DB객체 닫기
-				JDBCTemplate.close(rs);
-				JDBCTemplate.close(ps);
-			}
-		}	
-		return productInfo;
-	}
-
-	
-
-	@Override
-	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, long[] productsId) {
-
-		int sizeoflist,i;
-		sizeoflist=productsId.length;
-
-		String sql = "";
-		sql += "SELECT * FROM nutrientinfo NI, nutrientkind NK";
-		sql += " WHERE NI.nutid = NK.nutid";
-		sql += "	AND productid = ?";
-
-
-
-		List<Map<String, Object>> list = new ArrayList<>();
-		Map<String, Object> map = null;
-
-		for(i=0;i<sizeoflist; i++) {
-
-			try {
-				ps = conn.prepareStatement(sql);
-
-				ps.setLong(1, productsId[i]);
-
-				rs = ps.executeQuery();
-
-				while(rs.next()) {
-					map = new HashMap<>();
-
-					NutrientInfo ni = new NutrientInfo();
-					NutrientKind nk = new NutrientKind();
-
-					ni.setProductId( rs.getLong("productid") );
-					ni.setNutId( rs.getInt("nutid") );
-					ni.setNutContent( rs.getString("nutcontent") );
-
-					nk.setNutId( rs.getInt("nutid") );
-					nk.setNutKind( rs.getString("nutKind") );
-					nk.setDeficiency( rs.getString("deficiency") );
-					nk.setEffect( rs.getString("effect") );
-					nk.setHyperact( rs.getString("hyperact") );
-					nk.setRcmYth( rs.getString("rcmYth") );
-					nk.setRcmAdult( rs.getString("rcmAdult") );
-					nk.setRcmSen( rs.getString("rcmSen") );
-
-					map.put("ni", ni);
-					map.put("nk", nk);
-
-					list.add(map);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				JDBCTemplate.close(rs);
-				JDBCTemplate.close(ps);
-			}
-		}
-		return list;
-	}
-	
-
-	
-
 
 	@Override
 	public int selectCntBySearch(Connection conn, String search) {
@@ -873,15 +648,433 @@ public class ProductDaoImpl implements ProductDao {
 			res = ps.executeUpdate();
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("추가 실패");
 		}finally{
-			//DB객체 닫기
 			JDBCTemplate.close(ps);
 		}
 		
 		return res;
 	}
+	
+	
+	
+	
+	//--------------------------------------------------------------------
 
 
+	@Override
+	public List<CompBasket> selectByuserNo(Connection conn, int userNo) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM CompBasket";
+		sql += " WHERE userNo = ?";
+		sql += " ORDER BY productId DESC";
+
+		//결과 저장할 List
+		List<CompBasket> basketList = new ArrayList<>();
+
+		try {
+			ps = conn.prepareStatement(sql); //SQL수행 객체
+			ps.setInt(1, userNo);
+
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+
+			//조회 결과 처리
+			while(rs.next()) {
+				CompBasket c = new CompBasket(); //결과값 저장 객체
+
+				//결과값 한 행 처리
+				c.setProductId( rs.getLong("productId") );
+
+				//리스트에 결과값 저장
+				basketList.add(c);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+
+		//최종 결과 반환
+		return basketList;
+	}
+
+	@Override
+	public List<ProductInfo> selectBasketProductInfo(Connection conn, List<CompBasket> basketList) {
+		//SQL 작성
+		int sizeoflist,i;
+		String sql = "";
+		sql += "SELECT * FROM PRODUCTINFO";
+		sql += " WHERE productId = ?";
+
+		List<ProductInfo> productInfo = new ArrayList<>();
+		sizeoflist=basketList.size();
+
+		for(i=0;i<sizeoflist; i++) {
+			try {
+				ps = conn.prepareStatement(sql);
+				ps.setLong(1, basketList.get(i).getProductId());
+
+				rs = ps.executeQuery();
+
+				while(rs.next()){
+					ProductInfo p = new ProductInfo();
+
+					//		p.setProductId(rs.getLong("productId") );
+
+
+					//결과 저장할 List
+					//		List<ProductInfo> productInfo = new ArrayList<>();
+					//		sizeoflist=basketList.size();
+					//		List<ProductInfo> p[sizeoflist] ;
+					//		for(i=0;i<sizeoflist;i++)
+					//			p[i]= new ProductInfo(); //결과값 저장 객체
+					//		ps = conn.prepareStatement(sql); //SQL수행 객체
+					//
+					//		for(i=0;i<sizeoflist;i++) {
+					//			try {
+					//				ps.setLong(1, basketList.get(i).getProductId());
+					//
+					//				rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+					//
+					//				//조회 결과 처리
+					//
+					//				//결과값 한 행 처리
+					p.setProductId( rs.getLong("productId") );
+					p.setProductName( rs.getString("productName") );
+					p.setManuCom( rs.getString("manuCom") );
+					p.setType( rs.getString("type") );
+					p.setImage( rs.getString("image") );
+					p.setPurchaseLink( rs.getString("purchaseLink") );
+					p.setAllergyInfo( rs.getString("allergyInfo") );
+					p.setStarScore( rs.getString("starScore") );
+
+					productInfo.add(p);
+
+				}
+				//
+				//
+				//				//리스트에 결과값 저장
+				//				productInfo.add(p[i]);
+
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				//DB객체 닫기
+				JDBCTemplate.close(rs);
+				JDBCTemplate.close(ps);
+			}
+
+		}
+			//최종 결과 반환
+			return productInfo;
+	}
+
+	@Override
+	public List<ProductInfo> SelectProductInfo(Connection conn, long[] productId) {
+		int sizeoflist,i;
+		String sql = "";
+		sql += "SELECT * FROM PRODUCTINFO";
+		sql += " WHERE productId = ?";
+
+		List<ProductInfo> productInfo = new ArrayList<>();
+		sizeoflist = productId.length;
+
+//		System.out.println("sizeoflist : " + sizeoflist);
+
+
+		for(i=0;i<sizeoflist; i++) {
+
+			try {
+				ps = conn.prepareStatement(sql);
+				ps.setLong(1, productId[i]);
+
+				rs = ps.executeQuery();
+
+				while(rs.next()){
+					ProductInfo p = new ProductInfo();
+					p.setProductId( rs.getLong("productId") );
+					p.setProductName( rs.getString("productName") );
+					p.setManuCom( rs.getString("manuCom") );
+					p.setType( rs.getString("type") );
+					p.setImage( rs.getString("image") );
+					p.setPurchaseLink( rs.getString("purchaseLink") );
+					p.setAllergyInfo( rs.getString("allergyInfo") );
+					p.setStarScore( rs.getString("starScore") );
+
+					productInfo.add(p);
+
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				//DB객체 닫기
+				JDBCTemplate.close(rs);
+				JDBCTemplate.close(ps);
+			}
+		}	
+		return productInfo;
+	}
+
+	
+
+	@Override
+	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, long[] productsId) {
+
+		int sizeoflist,i;
+		sizeoflist=productsId.length;
+
+		String sql = "";
+		sql += "SELECT * FROM nutrientinfo NI, nutrientkind NK";
+		sql += " WHERE NI.nutid = NK.nutid";
+		sql += "	AND productid = ?";
+
+
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map = null;
+
+		for(i=0;i<sizeoflist; i++) {
+
+			try {
+				ps = conn.prepareStatement(sql);
+
+				ps.setLong(1, productsId[i]);
+
+				rs = ps.executeQuery();
+
+				while(rs.next()) {
+					map = new HashMap<>();
+
+					NutrientInfo ni = new NutrientInfo();
+					NutrientKind nk = new NutrientKind();
+
+					ni.setProductId( rs.getLong("productid") );
+					ni.setNutId( rs.getInt("nutid") );
+					ni.setNutContent( rs.getString("nutcontent") );
+
+					nk.setNutId( rs.getInt("nutid") );
+					nk.setNutKind( rs.getString("nutKind") );
+					nk.setDeficiency( rs.getString("deficiency") );
+					nk.setEffect( rs.getString("effect") );
+					nk.setHyperact( rs.getString("hyperact") );
+					nk.setRcmYth( rs.getString("rcmYth") );
+					nk.setRcmAdult( rs.getString("rcmAdult") );
+					nk.setRcmSen( rs.getString("rcmSen") );
+
+					map.put("ni", ni);
+					map.put("nk", nk);
+
+					list.add(map);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				JDBCTemplate.close(rs);
+				JDBCTemplate.close(ps);
+			}
+		}
+		return list;
+	}
+
+
+	@Override
+	public int deleteBasket(Connection conn, String productId) {
+		
+		//다음 게시글 번호 조회 쿼리
+				String sql = "";
+				sql += "DELETE CompBasket";
+				sql += " WHERE productId= ?";
+				
+				//DB 객체
+				PreparedStatement ps = null; 
+				
+				System.out.println("TESTRES: "+ productId);
+				int res = -1;
+				
+				try {
+					//DB작업
+					ps = conn.prepareStatement(sql);
+					ps.setString(1, productId);
+					System.out.println("TESTQWER: "+ productId);
+					res = ps.executeUpdate();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+					
+				} finally {
+					JDBCTemplate.close(ps);
+				}
+				
+				return res;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, String productId) {
+		
+		
+		String sql = "";
+		sql += "SELECT * FROM nutrientinfo NI, nutrientkind NK";
+		sql += " WHERE NI.nutid = NK.nutid";
+		sql += "	AND productid = ?";
+
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map = null;
+
+		try {
+			ps = conn.prepareStatement(sql);
+
+			ps.setLong(1, Long.parseLong(productId));
+
+			rs = ps.executeQuery();
+
+			while(rs.next()) {
+				map = new HashMap<>();
+
+				NutrientInfo ni = new NutrientInfo();
+				NutrientKind nk = new NutrientKind();
+
+				ni.setProductId( rs.getLong("productid") );
+				ni.setNutId( rs.getInt("nutid") );
+				ni.setNutContent( rs.getString("nutcontent") );
+
+				nk.setNutId( rs.getInt("nutid") );
+				nk.setNutKind( rs.getString("nutKind") );
+				nk.setDeficiency( rs.getString("deficiency") );
+				nk.setEffect( rs.getString("effect") );
+				nk.setHyperact( rs.getString("hyperact") );
+				nk.setRcmYth( rs.getString("rcmYth") );
+				nk.setRcmAdult( rs.getString("rcmAdult") );
+				nk.setRcmSen( rs.getString("rcmSen") );
+
+				map.put("ni", ni);
+				map.put("nk", nk);
+
+				list.add(map);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+	return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, long productId) {
+		String sql = "";
+		sql += "SELECT * FROM nutrientinfo NI, nutrientkind NK";
+		sql += " WHERE NI.nutid = NK.nutid";
+		sql += "	AND productid = ?";
+
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map = null;
+
+		try {
+			ps = conn.prepareStatement(sql);
+
+			ps.setLong(1, productId);
+
+			rs = ps.executeQuery();
+
+			while(rs.next()) {
+				map = new HashMap<>();
+
+				NutrientInfo ni = new NutrientInfo();
+				NutrientKind nk = new NutrientKind();
+
+				ni.setProductId( rs.getLong("productid") );
+				ni.setNutId( rs.getInt("nutid") );
+				ni.setNutContent( rs.getString("nutcontent") );
+
+				nk.setNutId( rs.getInt("nutid") );
+				nk.setNutKind( rs.getString("nutKind") );
+				nk.setRcmAdult( rs.getString("rcmAdult") );
+
+				map.put("ni", ni);
+				map.put("nk", nk);
+
+				list.add(map);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> SelectNutInfo(Connection conn, long[] productsId) {
+		
+//		System.out.println("-- SelectNutInfo --");
+//		System.out.println(productsId[0]);
+//		System.out.println(productsId[1]);
+		
+		String sql = "";
+		sql += "WITH nutinfo AS (";
+		sql += "	SELECT";
+		sql += "		productid, nutid";
+		sql += "		, REGEXP_REPLACE(nutcontent, '\\D') quantity";
+		sql += "		, REGEXP_REPLACE(nutcontent, '\\d') unit ";
+		sql += "	FROM nutrientinfo";
+		sql += "	WHERE productid IN ( ?, ? )";
+		sql += "		)";
+		sql += " SELECT * FROM (";
+		sql += "	SELECT nutid, sum(quantity) quantity, unit FROM nutinfo";
+		sql += "	GROUP BY nutid, unit";
+		sql += "	)  NI, nutrientkind NK";
+		sql += " WHERE NI.nutid = NK.nutid";
+		
+		
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map = null;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+
+			ps.setLong(1, productsId[0]);
+			ps.setLong(2, productsId[1]);
+
+			rs = ps.executeQuery();
+
+			while(rs.next()) {
+				
+				map = new HashMap<>();
+				
+				NutrientInfo ni = new NutrientInfo();
+				NutrientKind nk = new NutrientKind();
+
+//				ni.setProductId( rs.getLong("productid") );
+				ni.setNutId( rs.getInt("nutid") );
+
+				
+				ni.setNutContent( rs.getLong("quantity") + rs.getString("unit") );
+
+				nk.setNutId( rs.getInt("nutid") );
+				nk.setNutKind( rs.getString("nutKind") );
+				nk.setRcmAdult( rs.getString("rcmAdult") );
+
+				map.put("ni", ni);
+				map.put("nk", nk);
+				
+				list.add(map);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		return list;
+	}
 }

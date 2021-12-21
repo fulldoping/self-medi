@@ -4,17 +4,14 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.fulldoping.product.dto.CompBasket;
 import com.fulldoping.product.dto.NutrientKind;
 import com.fulldoping.product.dto.ProductInfo;
 import com.fulldoping.product.dto.SymptomCode;
-import com.fulldoping.util.Paging;
 import com.fulldoping.util.PagingProduct;
 
-
 public interface ProductDao {
+
 	/**
 	 * ProductInfo테이블 전체조회
 	 * 
@@ -32,36 +29,6 @@ public interface ProductDao {
 	 */
 	public int selectCntAll(Connection conn);
 
-	/**
-	 * CompBasket테이블 전체 조회
-	 * 
-	 * @param connection - DB연결 객체
-	 * @return List<CompBasket> - CompBasket 테이블 조회 결과 리스트
-	 */
-	public List<CompBasket> selectByuserNo(Connection conn,int userNo);
-
-	/**
-	 * CompBasket에 담긴 상품정보 조회
-	 * 
-	 * @param connection - DB연결 객체
-	 * @param basketList - CompBasket 테이블 조회 결과 리스트
-	 * @return List<ProductInfo> - ProductInfo 테이블 조회결과 리스트
-	 */
-	public List<ProductInfo> selectBasketProductInfo(Connection conn, List<CompBasket> basketList);
-
-
-	/**
-	 * 파라미터 전달값 productId를 이용해서 상품정보 조회
-	 * 
-	 * @param connection 
-	 * @param productId - 전달된 파라미터 상품 아이디 
-	 * @return - List<ProductInfo>
-	 */
-	public List<ProductInfo> SelectProductInfo(Connection conn, long[] productId);
-
-
-
-	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, long[] productsId);
 
 
 
@@ -176,8 +143,6 @@ public interface ProductDao {
 
 	
 	
-
-	
 	/**
 	 * 보관함 삽입
 	 * @param conn 
@@ -187,6 +152,67 @@ public interface ProductDao {
 	 * @return 성공 : 1, 실패 0
 	 */
 	public int insertBasket(Connection conn, long productId, int userNo);
+	
+	
+	//------------------------------------------------------------------
+	
+	
+	/**
+	 * CompBasket테이블 전체 조회
+	 * 
+	 * @param connection - DB연결 객체
+	 * @return List<CompBasket> - CompBasket 테이블 조회 결과 리스트
+	 */
+	public List<CompBasket> selectByuserNo(Connection conn,int userNo);
+
+	/**
+	 * CompBasket에 담긴 상품정보 조회
+	 * 
+	 * @param connection - DB연결 객체
+	 * @param basketList - CompBasket 테이블 조회 결과 리스트
+	 * @return List<ProductInfo> - ProductInfo 테이블 조회결과 리스트
+	 */
+	public List<ProductInfo> selectBasketProductInfo(Connection conn, List<CompBasket> basketList);
+
+
+	/**
+	 * 파라미터 전달값 productId를 이용해서 상품정보 조회
+	 * 
+	 * @param connection 
+	 * @param productId - 전달된 파라미터 상품 아이디 
+	 * @return - List<ProductInfo>
+	 */
+	public List<ProductInfo> SelectProductInfo(Connection conn, long[] productId);
+
+
+
+	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, long[] productsId);
+
+
+	/**
+	 * 장바구니 삭제
+	 * 
+	 * @param conn - DB연결객체
+	 * @param productId - 상품번호 담은 객체
+	 * @return
+	 */
+	public int deleteBasket(Connection conn, String productId);
+
+	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, String productId);
+
+	
+	public List<Map<String, Object>> selectNutirentInfoWithKind(Connection conn, long productId);
+
+	/**
+	 * 합산정보 조회
+	 * 
+	 * @param connection - DB연결 객체
+	 * @param productsId - 상품번호 객체
+	 * @return - List<Map<String, Object>> 합산정보 객체 반환
+	 */
+	public List<Map<String, Object>> SelectNutInfo(Connection conn, long[] productsId);
+
+
 
 
 

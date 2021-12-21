@@ -1,56 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>  
+	pageEncoding="UTF-8"%>
 
-<script type="text/javascript" src="/resources/js/httpRequest.js"></script>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script type="text/javascript">
-//AJAX 요청 보내는 메소드
-function send() {
-	//----- 전달 파라미터 구성 -----
-	var boardNo = ${viewBoard.boardNo };
-	var c = content.value;
-	var params = "&boardNo="+ boardNo+"&content="+c;
-	
-	//----- URL 구성 ----
-	var url = "/QnA/Comment/write";
-	
-	//----- AJAX 요청 전송 -----
-	sendRequest("POST", url, params, callback);
-}
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
-//AJAX 응답 처리하는 콜백함수
-function callback() {
-	if(httpRequest.readyState == 4) {
-		if(httpRequest.status == 200) {
-			console.log("AJAX 정상 응답")
-			
-			//정상응답 처리 함수
-			appendResult();
-			
-		} else {
-			console.log("AJAX 요청/응답 에러")
-		}
-	}
-}
+<c:forEach items="${commentList }" var="comment">
+	<div data-commentNo="${comment.commentNo }">
+			<label>${comment.userNick }</label><br>
+		<label class="oldComment">${comment.commentContent }</label>
+		<input type="text" class="newComment" name="newComment" style="display:none;" value="${comment.commentContent }" />
+		<button class="btnCommentUpdate" style="display:none;">확인</button>
+		<button class="btnCommentUpdateCancel" style="display:none;">취소</button><br>
+		<label>${comment.commentDate }</label><br>
+<%-- 		<a href="/QnA/Comment/Delete/?commentNo=${comment.commentNo }">삭제</a> --%>
+<%-- 		<a href="/QnA/Comment/Update?commentNo=${comment.commentNo }">수정</a> --%>
+		<span class="commentDelete">삭제</span>
+		<span class="commentUpdate">수정</span>
+<!-- 			<button  class="commentDelete">삭제</button> -->
+<!-- 			<button  class="commentUpdate">수정</button> -->
+		<hr>
+	</div>
+</c:forEach>
 
-//정상 응답 후 응답데이터 처리하는 함수
-function appendResult() {
-	commentList.innerHTML = httpRequest.responseText;
-}
-</script>
 
-</head>
-<body>
-
-<h4>댓글</h4>
-<hr>
-
-<div id="commentList"></div>
-
-<div>
-	<label>${nick }<br>
-		<textarea id="content"></textarea>
-	</label><br>
-	
-	<button onclick="send();">댓글 달기</button>
-</div>

@@ -12,14 +12,13 @@ public class Notice {
 	private String boardContent;
 	private String declare;
 	private int hit;
-	
+	private String userNick;
 	@Override
 	public String toString() {
 		return "Notice [boardNo=" + boardNo + ", userNo=" + userNo + ", userId=" + userId + ", boardTitle=" + boardTitle
 				+ ", boardDate=" + boardDate + ", boardContent=" + boardContent + ", declare=" + declare + ", hit="
-				+ hit + "]";
+				+ hit + ", userNick=" + userNick + "]";
 	}
-	
 	public int getBoardNo() {
 		return boardNo;
 	}
@@ -68,6 +67,13 @@ public class Notice {
 	public void setHit(int hit) {
 		this.hit = hit;
 	}
+	public String getUserNick() {
+		return userNick;
+	}
+	public void setUserNick(String userNick) {
+		this.userNick = userNick;
+	}
+
 	
 	
 }

@@ -3,7 +3,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:import url="/WEB-INF/views/layout/header.jsp" />
+<c:import url="/WEB-INF/views/layout/headerbs.jsp" />
 
 
 <!-- 스마트에디터 2 -->
@@ -28,7 +28,6 @@ function submitContents(elClickedObj) {
 
 <script type="text/javascript">
 $(document).ready(function() {
-	
 	//작성버튼 동작
 	$("#btnWrite").click(function() {
 		
@@ -59,7 +58,7 @@ $(document).ready(function() {
 <hr>
 
 <div>
-<form action="/QnA/write" method="post" enctype="multipart/form-data">
+<form action="/qna/write" method="post" enctype="multipart/form-data">
 
 <table class="table table-bordered">
 <tr><td class="info">닉네임</td><td>${userNick }</td></tr>

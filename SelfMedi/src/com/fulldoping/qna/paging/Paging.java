@@ -1,4 +1,4 @@
-package com.fulldoping.qna.paging;
+package com.fulldoping.QnA.paging;
 
 public class Paging {
 	private int curPage;	//현재 페이지 번호

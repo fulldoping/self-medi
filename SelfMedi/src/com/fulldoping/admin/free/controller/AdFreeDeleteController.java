@@ -22,9 +22,7 @@ public class AdFreeDeleteController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		Free free = freeService.getboardNo(req);
-		
-		System.out.println("TEST DELETE Free : " + free);
-		
+				
 		freeService.delete(free);
 		
 		//목록으로 리다이렉트

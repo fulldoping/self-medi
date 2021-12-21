@@ -1,6 +1,6 @@
 package com.fulldoping.member.service.impl;
 
-//import java.io.UnsupportedEncodingException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,16 +19,17 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member getLoginMember(HttpServletRequest req) {
 		
-//		try {
-//			req.setCharacterEncoding("UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			req.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		
 		//객체 생성
 		Member member = new Member();
 		
 		System.out.println("req.getParameter(\"userId\")========= " + req.getParameter("userId")   );
+		
 		//전달파라미터에서 가져오기
 		member.setUserId( req.getParameter("userId") );
 		member.setUserPw( req.getParameter("userPw") );
@@ -55,26 +56,22 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member getJoinMember(HttpServletRequest req) {
 	
-//		try {
-//			req.setCharacterEncoding("UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			req.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 
 		Member member = new Member();
 
-		member.setUserKind(1);
 		member.setUserId(req.getParameter("userId"));
 		member.setUserPw(req.getParameter("userPw"));
 		member.setUserName( req.getParameter("userName"));
 		member.setUserNick(req.getParameter("userNick"));
-		member.setUserPh( req.getParameter("userPh"));
 		member.setUserEm( req.getParameter("userEm"));
+		member.setUserPh( req.getParameter("userPh"));
 		member.setUserGen( req.getParameter("userGen"));
 		member.setUserBirth( req.getParameter("userBirth"));
-		//회원번호 - DaoImpl에서 시퀀스로 자동생성
-		//가입일자 - DaoImpl에서 sysdate로 자동생성
-		//사업자번호 - null
 		
 		return member;
 	}
@@ -89,5 +86,29 @@ public class MemberServiceImpl implements MemberService {
 			JDBCTemplate.rollback(conn);
 		}
 	}
+	
+
+	@Override
+	public Member findUserId(String userName, String userEm) {
+		
+		Connection conn = JDBCTemplate.getConnection();
+		Member member = memberDao.findUserId(conn, userName, userEm); 
+		
+		return member;
+			
+		
+		
+	}
+
+	@Override
+	public Member findUserPw(String userId, String userName, String userEm) {
+		
+		Connection conn = JDBCTemplate.getConnection();
+		Member member = memberDao.findUserPw(conn, userId, userName, userEm);
+		
+		return member;
+	}
+	
+	
 	
 }

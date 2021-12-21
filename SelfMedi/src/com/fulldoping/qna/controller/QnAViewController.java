@@ -1,6 +1,7 @@
-package com.fulldoping.qna.controller;
+package com.fulldoping.QnA.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,12 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fulldoping.qna.dto.QnA;
-import com.fulldoping.qna.dto.QnAFile;
-import com.fulldoping.qna.service.face.QnAService;
-import com.fulldoping.qna.service.impl.QnAServiceImpl;
+import com.fulldoping.QnA.dto.QnA;
+import com.fulldoping.QnA.dto.QnAComments;
+import com.fulldoping.QnA.dto.QnAFile;
+import com.fulldoping.QnA.service.face.QnAService;
+import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/view")
+@WebServlet("/qna/view")
 public class QnAViewController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -31,11 +33,9 @@ public class QnAViewController extends HttpServlet {
 		
 		//조회결과 MODEL값 전달
 		req.setAttribute("viewBoard", viewBoard);
-
 		
 		//닉네임 전달
 		req.setAttribute("nick", qnaService.getNick(viewBoard));
-		System.out.println("첨부파일 조회");
 		
 		//첨부파일 정보 조회
 		QnAFile boardFile = qnaService.getviewFile(viewBoard);
@@ -43,9 +43,14 @@ public class QnAViewController extends HttpServlet {
 		//첨부파일 정보 MODEL값 전달
 		req.setAttribute("boardFile", boardFile);
 		
+		//댓글 전체 조회
+		List<QnAComments> commentList = qnaService.getCommentList(boardno.getBoardNo());
+				
+		//조회결과 MODEL값 전달
+		req.setAttribute("commentList", commentList);
 		
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/view.jsp").forward(req, resp);		
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/view.jsp").forward(req, resp);		
 
 	}
 

@@ -14,7 +14,6 @@ import com.fulldoping.product.dto.ProductInfo;
 import com.fulldoping.product.dto.SymptomCode;
 import com.fulldoping.product.service.face.ProductService;
 import com.fulldoping.product.service.impl.ProductServiceImpl;
-import com.fulldoping.util.Paging;
 import com.fulldoping.util.PagingProduct;
 
 

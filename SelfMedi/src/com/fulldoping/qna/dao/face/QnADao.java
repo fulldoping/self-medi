@@ -1,12 +1,13 @@
-package com.fulldoping.qna.dao.face;
+package com.fulldoping.QnA.dao.face;
 
 import java.sql.Connection;
 import java.util.List;
 
-import com.fulldoping.qna.dto.QnA;
-import com.fulldoping.qna.dto.QnAComments;
-import com.fulldoping.qna.dto.QnAFile;
-import com.fulldoping.qna.paging.Paging;
+import com.fulldoping.QnA.dto.QnA;
+import com.fulldoping.QnA.dto.QnAComments;
+import com.fulldoping.QnA.dto.QnADeclare;
+import com.fulldoping.QnA.dto.QnAFile;
+import com.fulldoping.QnA.paging.Paging;
 
 public interface QnADao {
 	
@@ -120,6 +121,7 @@ public interface QnADao {
 	 * @param board - 삭제할 게시글번호를 담은 객체
 	 */
 	public int deleteFile(Connection conn, QnA board);
+	public int deleteFile(Connection conn, int boardNo);
 
 	/**
 	 * QnA댓글테이블 전체 조회
@@ -130,6 +132,14 @@ public interface QnADao {
 	public List<QnAComments> selectAllComments(Connection conn);
 	
 	/**
+	 * 게시글에 대한 QnA댓글테이블 전체 조회
+	 * 
+	 * @param conn - DB연결 객체
+	 * @return List<Board> - QnA테이블 전체 조회 결과 리스트
+	 */
+	public List<QnAComments> selectAllComments(Connection conn, int boardno);
+	
+	/**
 	 * 다음 댓글 번호 조회
 	 * 
 	 * 	게시글 테이블과 첨부파일 테이블에 입력될 공통 commentno값을 시퀀스를 통해 조회한다
@@ -138,6 +148,14 @@ public interface QnADao {
 	 * @return 다음 댓글 번호
 	 */
 	public int selectNextCommentno(Connection conn);
+	
+	/**
+	 * 특정 댓글 조회
+	 * 
+	 * @param commentsno - 조회할 boardno를 가진 객체
+	 * @return QnAComments - 조회된 결과 객체
+	 */
+	public QnAComments selectcommentBycommentno(Connection conn, QnAComments commentno);
 	
 	/**
 	 * 댓글 입력
@@ -161,8 +179,25 @@ public interface QnADao {
 	public int commentsdelete(Connection conn, QnAComments comment);
 	
 	/**
-	 * 게시글 신고 여부
+	 * 댓글 삭제
+	 * 
+	 * @param comments - 삭제할 게시판 번호를 담은 객체
 	 */
-	public int declare(Connection conn);
+	public int commentsdelete(Connection conn, QnA board);
+	
+
+	/**
+	 * userNo로 userNick을 가져오는 기능
+	 */
+	public String getUserNick(Connection conn, Integer userNo);
+
+	/**
+	 * 신고 기능
+	 * @param conn - DB연결 객체
+	 * @param qnaDeclare - QnA신고
+	 * @return
+	 */
+	public int declare(Connection conn, QnADeclare qnaDeclare);
+
 	
 }

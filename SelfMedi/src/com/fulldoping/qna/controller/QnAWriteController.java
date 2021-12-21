@@ -1,4 +1,4 @@
-package com.fulldoping.qna.controller;
+package com.fulldoping.QnA.controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fulldoping.qna.service.face.QnAService;
-import com.fulldoping.qna.service.impl.QnAServiceImpl;
+import com.fulldoping.QnA.service.face.QnAService;
+import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/write")
+@WebServlet("/qna/write")
 public class QnAWriteController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -20,7 +20,6 @@ public class QnAWriteController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("/QnA/write [GET]");
 		
 		//로그인 되어있지 않으면 리다이렉트 
 		if( req.getSession().getAttribute("login") == null
@@ -32,18 +31,17 @@ public class QnAWriteController extends HttpServlet {
 		}
 		
 		//VIEW 지정
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/write.jsp").forward(req, resp);		
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/write.jsp").forward(req, resp);		
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("/QnA/write [POST]");
 		
 		//작성글 삽입
 		qnaService.insert(req);
 		
 		//목록으로 리다이렉션
-		resp.sendRedirect("/QnA/list");
+		resp.sendRedirect("/qna/list");
 	}
 
 }

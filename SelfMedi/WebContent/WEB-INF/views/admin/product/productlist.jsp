@@ -10,20 +10,28 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		
-		$("[name='deleteProductBtn']").click(function() {
+		 $("[name='deleteProductBtn']").click(function() {
+	         
+	         if(confirm("정말 삭제하시겠습니까 ?") == true){
+	            var p1 = (this).value;
+	            console.log(p1);
+	            alert("삭제 되었습니다");
+	            location.href="/ad/product/delete?productId=" + p1;
+	             
+	           }else{
+	               return false;
+	           }
+	      
+	      });
+
+ 		$("[name='updateProductBtn']").click(function() {
 			
-			if(confirm("정말 삭제하시겠습니까 ?") == true){
-				var p1 = (this).value;
-				console.log(p1);
-				alert("삭제 되었습니다");
-				location.href="/ad/product/delete?productId=" + p1;
- 				
- 		    }else{
- 		        return false;
- 		    }
+ 			var p2 = (this).value;
+			location.href="/ad/product/update?productId=" + p2;
+			
+ 		});	
 		
-		});
-			
+
 	});
 
 
@@ -87,53 +95,62 @@
 	top:1px;
 }
 
-.btn{
+/* .btn{
 	position : relative;
 	left: 880px;
-}
+} */
 
 </style>
 
 <div id="maincontent">
 
-<div class="container">
+	<div class="productcontainer">
 
-<h1 style="text-align :center; color: cornflowerblue; margin-top: 50px;" >자유게시판 관리</h1>
-<hr>
-<button style="margin:0 auto;"><a href="/ad/product/add">신규상품 등록</a></button>
-<table class="tg" style="undefined;table-layout: fixed; width: 800px; margin:0 auto;">
-<colgroup>
-	<col style="width: 10%">
-	<col style="width: 20%">
-	<col style="width: 40%">
-	<col style="width: 10%">
-	<col style="width: 10%">
-</colgroup>
-<thead>
-  <tr>
-    <th class="tg-18bt">사진</th>
-    <th class="tg-18bt">상품번호</th>
-    <th class="tg-18bt">제품 이름</th>
-    <th class="tg-18bt">제조사</th>
-    <th class="tg-18bt">수정/삭제</th>
-  </tr>
-</thead>
-<tbody>
-<c:forEach items="${productList }" var="productInfo">
-  <tr>
-    <td class="tg-xphl"><img src="${productInfo.image }" width="60" height="40"></td>
-    <td class="tg-xphl">${productInfo.productId }</td>
-    <td class="tg-xphl">${productInfo.productName }</td>
-    <td class="tg-xphl">${productInfo.manuCom }</td>
-    <td class="tg-xphl"><button>수정</button> <button id="deleteProductBtn" name="deleteProductBtn" value="${productInfo.productId }">삭제</button></td>
-  </tr>
-</c:forEach>
-</tbody>
-</table>
+		<h2 style="margin: 0px auto; padding-top: 30px; text-align: center; color: black;">상품 관리</h2>
+		<hr>
 
-<c:import url="/WEB-INF/views/admin/layout/paging.jsp" />
-<!-- .container -->
-</div>
+		<table class="table table-bordered"
+			style="width: 1000px; margin: 0 auto;">
+			<colgroup>
+				<col style="width: 10%">
+				<col style="width: 20%">
+				<col style="width: 38%">
+				<col style="width: 10%">
+				<col style="width: 12%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="info">사진</th>
+					<th class="info">상품번호</th>
+					<th class="info">제품 이름</th>
+					<th class="info">제조사</th>
+					<th class="info">수정/삭제</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${productList }" var="productInfo">
+					<tr>
+						<td class="tg-xphl"><img src="${productInfo.image }"
+							width="60" height="40"></td>
+						<td class="tg-xphl">${productInfo.productId }</td>
+						<td class="tg-xphl"><a href="/product/detail?productId=${productInfo.productId }">${productInfo.productName }</a></td>
+						<td class="tg-xphl">${productInfo.manuCom }</td>
+						<td class="tg-xphl"><button id="updateProductBtn" class="btn btn-primary btn-sm"
+								name="updateProductBtn" value="${productInfo.productId }">수정</button>
+							<button id="deleteProductBtn" name="deleteProductBtn" class="btn btn-danger btn-sm"
+								value="${productInfo.productId }">삭제</button></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<br>
+		<button style="margin: 0 auto;">
+			<a href="<%=request.getContextPath()%>/ad/product/add">신규상품 등록</a>
+		</button>
+
+		<c:import url="/WEB-INF/views/layout/pagingAdProduct.jsp" />
+		<!-- .container -->
+	</div>
 
 
 </div>

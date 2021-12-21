@@ -4,9 +4,10 @@ import java.sql.Connection;
 import java.util.List;
 
 import com.fulldoping.free.dto.Free;
+import com.fulldoping.free.dto.FreeComments;
 import com.fulldoping.free.dto.FreeDeclare;
 import com.fulldoping.free.dto.FreeFile;
-import com.fulldoping.paging.Paging;
+import com.fulldoping.free.paging.FreePaging;
 
 public interface FreeDao {
 
@@ -19,7 +20,7 @@ public interface FreeDao {
 	 * @param paging - 페이징 정보 객체
 	 * @return List<Free> - Free테이블 전체 조회 결과 리스트
 	 */
-	public List<Free> selectAll(Connection conn, Paging paging);
+	public List<Free> selectAll(Connection conn, FreePaging paging);
 
 	/**
 	 * 총 게시글 수 조회
@@ -87,6 +88,15 @@ public interface FreeDao {
 	 * @return FreeFile - 조회된 첨부파일
 	 */
 	public FreeFile selectFile(Connection conn, Free viewFree);
+	
+	/**
+	 * userNo로 userId조회
+	 * 
+	 * @param conn
+	 * @param userNo
+	 * @return
+	 */
+	public String getUserId(Connection conn, int userNo);
 
 	/**
 	 * 게시글 수정 
@@ -101,24 +111,13 @@ public interface FreeDao {
 	 * @param free - 삭제할 게시글번호를 담은 객체
 	 */
 	public int deleteFile(Connection conn, Free free);
-
+	
 	/**
 	 * 게시글 삭제
 	 * 
 	 * @param free - 삭제할 게시글번호를 담은 객체
 	 */
 	public int delete(Connection conn, Free free);
-
-	
-	/**
-	 * userNo로 userId조회
-	 * 
-	 * @param conn
-	 * @param userNo
-	 * @return
-	 */
-	public String getUserId(Connection conn, int userNo);
-
 	
 	/**
 	 *  신고기능
@@ -127,6 +126,26 @@ public interface FreeDao {
 	 * @return
 	 */
 	public int declare(Connection conn, FreeDeclare freeDeclare);
+
+	//댓글
+	public List<FreeComments> selectAllComments(Connection conn);
+
+	public List<FreeComments> selectAllComments(Connection conn, int boardno);
+
+	public int commentsinsert(Connection conn, FreeComments comment);
+
+	public int selectNextCommentno(Connection conn);
+
+	public FreeComments selectcommentBycommentno(Connection conn, FreeComments commentno);
+
+	public int commentsupdate(Connection conn, FreeComments comment);
+
+	public int commentsdelete(Connection conn, FreeComments comment);
+
+	public int commentsdelete(Connection conn, Free board);
+
+	public String getUserNick(Connection conn, Integer userNo);
+	
 
 
 

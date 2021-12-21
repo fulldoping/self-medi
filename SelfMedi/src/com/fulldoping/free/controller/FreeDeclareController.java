@@ -28,7 +28,6 @@ public class FreeDeclareController extends HttpServlet {
 			
 		//전달파라미터 얻기 - boardNo
 		Free boardNo = freeService.getboardNo(req); // 보드 넘버 넘어옴
-		System.out.println("daclare boardVo : " + boardNo);	
 		
 		//상세보기 결과 조회
 		Free declareFree = freeService.view(boardNo);
@@ -37,14 +36,14 @@ public class FreeDeclareController extends HttpServlet {
 		req.setAttribute("userNick", freeService.getuserNick(declareFree));
 		
 		//조회결과 MODEL값 전달
-		req.setAttribute("updateFree", declareFree); // 데이터 넘어 오는거 확인
+		req.setAttribute("declareFree", declareFree); // 데이터 넘어 오는거 확인
+		System.out.println("TEST declareFree : " + declareFree);
 		
-		System.out.println(declareFree);
 		//첨부파일 정보 VIEW에 전달
 		FreeFile freeFile = freeService.viewFile(declareFree);  // 넘어 오는거 확인 환료
 		
 		req.setAttribute("freeFile", freeFile); // 넘어 오는거 확인
-		
+				
 		//VIEW 지정 및 응답 - forward
 		req.getRequestDispatcher("/WEB-INF/views/freeboard/freedeclare.jsp").forward(req, resp);
 		}
@@ -52,7 +51,10 @@ public class FreeDeclareController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			
+		System.out.println("/TEST [POST]");
+
+		System.out.print("BOARDNO : " + req.getParameter("boardNo"));
+		System.out.println(req);
 		freeService.declare(req);
 		
 		resp.sendRedirect("/free/list");

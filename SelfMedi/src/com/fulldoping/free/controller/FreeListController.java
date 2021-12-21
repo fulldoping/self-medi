@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fulldoping.free.dto.Free;
+import com.fulldoping.free.paging.FreePaging;
 import com.fulldoping.free.service.face.FreeService;
 import com.fulldoping.free.service.impl.FreeServiceImpl;
-import com.fulldoping.paging.Paging;
 
 @WebServlet("/free/list")
 public class FreeListController extends HttpServlet {
@@ -23,10 +23,9 @@ public class FreeListController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("FreeListController [GET]");
 		
 		//요청 파라미터를 전달하여 Paging객체 생성하기
-		Paging paging = freeService.getPaging(req);
+		FreePaging paging = freeService.getPaging(req);
 		
 		//게시글 전체 조회
 		List<Free> freeList = freeService.getList(paging);

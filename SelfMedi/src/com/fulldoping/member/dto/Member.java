@@ -4,18 +4,18 @@ import java.util.Date;
 
 public class Member {
 	
-	private int userNo;		//회원번호
-	private int userKind;	//회원구분 (0: 관리자, 1: 일반, 2: 사업자)
-	private String userId;	//아이디
-	private String userPw;	//비밀번호
-	private String userName;//이름
-	private String userNick;//닉네임
-	private String userPh;	//휴대폰 번호
-	private String userEm;	//이메일 주소
-	private String userGen;	//성별 (F,M)
-	private String userBirth;	//생년월일
-	private Date joinDate;	//가입일자
-	private int businessNo;	//사업자번호 (약사번호 5자리)
+	private int userNo;       //회원번호
+	private int userKind;	  //회원구분 (0: 관리자, 1: 일반, 2: 사업자)
+	private String userId;    //아이디
+	private String userPw;	  //비밀번호
+	private String userName;  //이름
+	private String userNick;  //닉네임
+	private String userPh;    //휴대폰 번호
+	private String userEm;    //이메일 주소
+	private String userGen;   //성별 (F,M)
+	private String userBirth; //생년월일
+	private Date joinDate;    //가입일자
+	private String businessNo;   //사업자번호 (약사번호 5자리)
 	
 	@Override
 	public String toString() {
@@ -113,16 +113,12 @@ public class Member {
 		this.joinDate = joinDate;
 	}
 
-	public int getBusinessNo() {
+	public String getBusinessNo() {
 		return businessNo;
 	}
 
-	public void setBusinessNo(int businessNo) {
+	public void setBusinessNo(String businessNo) {
 		this.businessNo = businessNo;
 	}
-	
-	
 
-}	
-	
-	
+}

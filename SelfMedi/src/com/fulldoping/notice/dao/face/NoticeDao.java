@@ -4,8 +4,9 @@ import java.sql.Connection;
 import java.util.List;
 
 import com.fulldoping.notice.dto.Notice;
+import com.fulldoping.notice.dto.NoticeComments;
 import com.fulldoping.notice.dto.NoticeFile;
-import com.fulldoping.paging.Paging;
+import com.fulldoping.notice.paging.NoticePaging;
 
 public interface NoticeDao {
 
@@ -17,7 +18,7 @@ public interface NoticeDao {
 	 * @param paging
 	 * @return
 	 */
-	public List<Notice> selectAll(Connection conn, Paging paging);
+	public List<Notice> selectAll(Connection conn, NoticePaging paging);
 
 	/**
 	 * 총 게시글 조회
@@ -62,6 +63,21 @@ public interface NoticeDao {
 	 * @param viewNotice - 첨부파일을 조회할 게시글번호 객체
 	 * @return NoticeFile - 조회된 첨부파일
 	 */
+	
+	//댓글
 	public NoticeFile selectFile(Connection conn, Notice viewNotice);
 
+	public List<NoticeComments> selectAllComments(Connection connection, int boardnum);
+
+	public int selectNextCommentno(Connection conn);
+
+	public String getUserNick(Connection conn, Integer attribute);
+
+	public int commentsinsert(Connection conn, NoticeComments comment);
+
+	public NoticeComments selectcommentBycommentno(Connection conn, NoticeComments comment);
+
+	public int commentsupdate(Connection conn, NoticeComments comment);
+
+	public int commentsdelete(Connection conn, NoticeComments comment);
 }

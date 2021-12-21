@@ -1,4 +1,4 @@
-package com.fulldoping.qna.controller;
+package com.fulldoping.QnA.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fulldoping.qna.dto.QnA;
-import com.fulldoping.qna.paging.Paging;
-import com.fulldoping.qna.service.face.QnAService;
-import com.fulldoping.qna.service.impl.QnAServiceImpl;
+import com.fulldoping.QnA.dto.QnA;
+import com.fulldoping.QnA.paging.Paging;
+import com.fulldoping.QnA.service.face.QnAService;
+import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/list")
+@WebServlet("/qna/list")
 public class QnAListController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -35,7 +35,7 @@ public class QnAListController extends HttpServlet {
 		req.setAttribute("paging", paging);
 				
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/list.jsp").forward(req, resp);		
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/list.jsp").forward(req, resp);		
 				
 	}
 

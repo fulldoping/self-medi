@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
-<html>
+<html style="height:100%">
 <head>
 <meta charset="UTF-8">
 <title> : : : Self-Medi Admin : : : </title>
@@ -35,48 +35,76 @@ $(document).ready(function() {
 </script>
 
 <style type="text/css">
-body {
-  width: auto;
-  margin: auto;
+@font-face { /* 글꼴 적용:NotoSans */
+    font-family: 'notoBlack';
+    src: url('/resources/font/NotoSansKR-Black.otf') format('truetype');
+    font-family: 'notoBold';
+    src: url('/resources/font/NotoSansKR-Bold.otf') format('truetype');
+    font-family: 'notoLight';
+    src: url('/resources/font/NotoSansKR-Light.otf') format('truetype');
+    font-family: 'notoMedium';
+    src: url('/resources/font/NotoSansKR-Medium.otf') format('truetype');
+    font-family: 'notoRegular';
+    src: url('/resources/font/NotoSansKR-Regular.otf') format('truetype');
+    font-family: 'notoThin';
+    src: url('/resources/font/NotoSansKR-Thin.otf') format('truetype');
 }
-
+*{font-family: 'notoRegular'; /* 글꼴 적용:NotoSans */}
+body {width: auto;/* margin: auto; */height:100%}
+.boardcontainer{border: 1px solid black;text-align: center;vertical-align: middle; background-color:#FFF;height:100%;}
+.membercontainer{border: 1px solid black;text-align: center;vertical-align: middle;background-color:#FFF;height:100%;}
+.productcontainer{text-align: center;vertical-align: middle;margin: 0 auto;background-color:#FFF;height:100%;}
 #sidebar {
-  background: #768d87;
+  background: #213983;
   float: left;
   width: 20%;
-  height: 800px;
+  height:100%;
   border: 1px solid black;
 }
 
 #maincontent {
-  background: #fff;
-  height: 800px;
+  background: #FFF;
+  height:100%;
   border: 1px solid black;
+}
+
+.clearfix {
+	clear: both;
+	
+	/* 컨텐츠 영역 없애기 */
+	width: 0;
+	height: 0;
+	
+	/* 넘쳐서 흘러나온 내용물을 보이지 않게 설정한다 */
+	overflow: hidden;
 }
 
 .myButton {
 	box-shadow:inset 0px 0px 0px 0px #91b8b3;
-	background:linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
-	background-color:#768d87;
-/* 	border-radius:6px; */
-	border:1px solid #566963;
+	background:linear-gradient(to bottom, #213983 5%, #213983 100%);
+	background-color:#213983;
+ 	border-radius:6px;
+	border:1px solid #fff;
 	display:block;
 	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
+	color:#fff;
+	font-family:notoRegular;
 	font-size:15px;
-	font-weight:bold;
+/* 	font-weight:bold; */
 	padding:8px 31px;
 	margin: 5px;
 	text-decoration:none;
 	text-shadow:1px 1px 0px #2b665e;
 }
 .myButton:hover {
-	background:linear-gradient(to bottom, #eee 5%, #eee 100%);
+	background:linear-gradient(to left, #f2f2f2 5%, #213983 100%);
 /* 	background:linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%); */
-	background-color:#eee;
+	background-color:#f2f2f2;
 /* 	background-color:#6c7c7c; */
-	color: menutext;
+	color:#ffd32a;
+	border:1px solid #fff;
+	text-decoration:none;
+	font-weight: bold;
 }
 .myButton:active {
 	position:relative;
@@ -88,10 +116,9 @@ body {
 </head>
 <body>
 
-<div id="header">
+<div id="header" style="color:#345EE6;">
 	<h1><a href="/">Self-Medi</a></h1>
 </div>
-
 <div id="sidebar">
 <!-- <button type="button" id="btnMain" >메인</button><br><br> -->
 <!-- <button type="button" id="btnMember" >회원관리</button><br><br> -->
@@ -105,7 +132,8 @@ body {
 <a href="<%=request.getContextPath() %>/ad/member/list" class="myButton">회원 관리</a><br><br>
 <a href="<%=request.getContextPath() %>/ad/notice/list" class="myButton">공지사항</a>
 <a href="<%=request.getContextPath() %>/ad/free/list" class="myButton">자유게시판</a>
+<a href="<%=request.getContextPath() %>/ad/freedeclare/list" class="myButton">자유게시판 신고글</a>
 <a href="<%=request.getContextPath() %>/ad/qna/list" class="myButton">QnA</a>
-<a href="<%=request.getContextPath() %>/ad/declare/list" class="myButton">신고된 게시글</a><br><br>
+<a href="<%=request.getContextPath() %>/ad/qnaeclare/list" class="myButton">QnA 신고글</a><br><br>
 <a href="<%=request.getContextPath() %>/ad/product/list" class="myButton">상품 관리</a>
 </div>

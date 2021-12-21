@@ -12,11 +12,13 @@ public class FreeDeclare {
 	private String boardContent;
 	private String declare;
 	private String reason;
+	private String userNick;
+	private int hit;
 	@Override
 	public String toString() {
 		return "FreeDeclare [boardNo=" + boardNo + ", userNo=" + userNo + ", userId=" + userId + ", boardTitle="
 				+ boardTitle + ", boardDate=" + boardDate + ", boardContent=" + boardContent + ", declare=" + declare
-				+ ", reason=" + reason + "]";
+				+ ", reason=" + reason + ", userNick=" + userNick + ", hit=" + hit + "]";
 	}
 	public int getBoardNo() {
 		return boardNo;
@@ -66,6 +68,20 @@ public class FreeDeclare {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
+	public String getUserNick() {
+		return userNick;
+	}
+	public void setUserNick(String userNick) {
+		this.userNick = userNick;
+	}
+	public int getHit() {
+		return hit;
+	}
+	public void setHit(int hit) {
+		this.hit = hit;
+	}
+	
+
 	
 
 	

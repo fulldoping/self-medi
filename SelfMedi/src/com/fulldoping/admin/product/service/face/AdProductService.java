@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fulldoping.admin.product.paging.AdProductPaging;
 import com.fulldoping.product.dto.NutrientInfo;
 import com.fulldoping.product.dto.NutrientKind;
 import com.fulldoping.product.dto.ProductInfo;
@@ -11,7 +12,6 @@ import com.fulldoping.product.dto.SymptomCode;
 import com.fulldoping.product.dto.SymptomInfo;
 import com.fulldoping.product.dto.TargetCode;
 import com.fulldoping.product.dto.TargetInfo;
-import com.fulldoping.util.Paging;
 
 public interface AdProductService {
 
@@ -22,7 +22,7 @@ public interface AdProductService {
 	 * @param req
 	 * @return
 	 */
-	Paging getPaging(HttpServletRequest req);
+	public AdProductPaging getPaging(HttpServletRequest req);
 
 	/**
 	 * 상품조회
@@ -30,7 +30,7 @@ public interface AdProductService {
 	 * @param paging
 	 * @return
 	 */
-	List<ProductInfo> getProduct(Paging paging);
+	public List<ProductInfo> getProduct(AdProductPaging paging);
 
 	
 	/**
@@ -38,21 +38,21 @@ public interface AdProductService {
 	 * 
 	 * @return
 	 */
-	List<TargetCode> getTargetCode();
+	public List<TargetCode> getTargetCode();
 
 	/**
 	 * SymptomCode 테이블 조회
 	 * 
 	 * @return
 	 */
-	List<SymptomCode> getSymptomCode();
+	public List<SymptomCode> getSymptomCode();
 
 	/**
 	 * NutrientKind 테이블 조회
 	 * 
 	 * @return
 	 */
-	List<NutrientKind> getNutrientKind();
+	public List<NutrientKind> getNutrientKind();
 
 	
 	/**
@@ -62,7 +62,7 @@ public interface AdProductService {
 	 * @param req
 	 * @return
 	 */
-	ProductInfo getAddProductInfo(HttpServletRequest req);
+	public ProductInfo getAddProductInfo(HttpServletRequest req);
 
 	
 	/**
@@ -71,7 +71,7 @@ public interface AdProductService {
 	 * @param req
 	 * @return
 	 */
-	TargetInfo getAddTargetInfo(HttpServletRequest req);
+	public TargetInfo getAddTargetInfo(HttpServletRequest req);
 
 
 	/**
@@ -80,7 +80,7 @@ public interface AdProductService {
 	 * @param req
 	 * @return
 	 */
-	List<SymptomInfo> getAddSymptomInfo(HttpServletRequest req);
+	public List<SymptomInfo> getAddSymptomInfo(HttpServletRequest req);
 
 	
 	/**
@@ -89,7 +89,7 @@ public interface AdProductService {
 	 * @param req
 	 * @return
 	 */
-	List<NutrientInfo> getAddNutrientInfo(HttpServletRequest req);
+	public List<NutrientInfo> getAddNutrientInfo(HttpServletRequest req);
 
 	/**
 	 * ProductInfo 테이블 상품 추가 
@@ -98,7 +98,7 @@ public interface AdProductService {
 	 * @param productInfo
 	 * @return
 	 */
-	boolean insertProductInfo(HttpServletRequest req, ProductInfo productInfo);
+	public boolean insertProductInfo(HttpServletRequest req, ProductInfo productInfo);
 
 	/**
 	 * TargetInfo 테이블 상품 추가 
@@ -107,7 +107,7 @@ public interface AdProductService {
 	 * @param targetInfo
 	 * @return
 	 */
-	boolean insertTargetInfo(HttpServletRequest req, TargetInfo targetInfo);
+	public boolean insertTargetInfo(HttpServletRequest req, TargetInfo targetInfo);
 
 	/**
 	 * SymptomInfo 테이블 상품 추가 
@@ -116,7 +116,7 @@ public interface AdProductService {
 	 * @param symptomInfo
 	 * @return
 	 */
-	boolean insertSymptomInfo(HttpServletRequest req, List<SymptomInfo> symptomInfo);
+	public boolean insertSymptomInfo(HttpServletRequest req, List<SymptomInfo> symptomInfo);
 
 	/**
 	 * NutrientInfo 테이블 상품 추가 
@@ -125,7 +125,7 @@ public interface AdProductService {
 	 * @param nutrientInfo
 	 * @return
 	 */
-	boolean insertNutrientInfo(HttpServletRequest req, List<NutrientInfo> nutrientInfo);
+	public boolean insertNutrientInfo(HttpServletRequest req, List<NutrientInfo> nutrientInfo);
 
 	
 	
@@ -135,7 +135,49 @@ public interface AdProductService {
 	 * @param productId
 	 * @return
 	 */
-	boolean deleteProduct(long productId);
+	public boolean deleteProduct(long productId);
+	
+	
+	
+
+	/**
+	 * 수정페이지 입력할 상품정보 조회
+	 * 
+	 * @param productId - 파라미터로 전달받은 상품 번호
+	 * @return ProductInfo 상품정보 
+	 */
+	public ProductInfo getUpdateProductInfo(long productId);
+
+	/**
+	 * 수정페이지 입력할 대상별정보 조회
+	 * 
+	 * @param productId - 파라미터로 전달받은 상품 번호
+	 * @return TargetInfo 대상별 코드
+	 */
+	public int getUpdateTargetInfo(long productId);
+	
+	/**
+	 * 수정페이지 입력할 증상별정보 조회
+	 * 
+	 * @param productId - 파라미터로 전달받은 상품 번호
+	 * @return List<SymptomInfo> 증상별 코드 리스트
+	 */
+	public List<SymptomInfo> getUpdateSymptomInfo(long productId);
+
+	/**
+	 * 수정페이지 입력할 영양소정보 조회
+	 * 
+	 * @param productId - 파라미터로 전달받은 상품 번호
+	 * @return List<NutrientInfo> 영양소 코드및 정보 리스트
+	 */
+	public List<NutrientInfo> getUpdateNutrientInfo(long productId);
+
+	/**
+	 * 전달받은 req파라미터 값으로 update 실행
+	 * 
+	 * @param req - 입력받은 값
+	 */
+	public void update(HttpServletRequest req);
 
 
 

@@ -1,4 +1,4 @@
-package com.fulldoping.qna.controller;
+package com.fulldoping.QnA.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,29 +9,35 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fulldoping.qna.dto.QnAComments;
-import com.fulldoping.qna.service.face.QnAService;
-import com.fulldoping.qna.service.impl.QnAServiceImpl;
+import com.fulldoping.QnA.dto.QnA;
+import com.fulldoping.QnA.dto.QnAComments;
+import com.fulldoping.QnA.service.face.QnAService;
+import com.fulldoping.QnA.service.impl.QnAServiceImpl;
 
-@WebServlet("/QnA/Comment")
+@WebServlet("/qna/comment")
 public class QnACommentController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	//QnAService 객체 생성
-    private QnAService qnaService = new QnAServiceImpl();   
+    private QnAService qnaService = new QnAServiceImpl(); 
 	
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
-		//게시글 전체 조회
-		List<QnAComments> commentList = qnaService.getCommentList();
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    
+    	//전달파라미터 얻기 - boardno
+    	QnA boardno = qnaService.getBoardno(req);
+    	System.out.println(boardno.getBoardNo());
+    	
+    	//댓글 전체 조회
+    	List<QnAComments> commentList = qnaService.getCommentList(boardno.getBoardNo());
 		
 		//조회결과 MODEL값 전달
 		req.setAttribute("commentList", commentList);
-				
+		
+		
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/QnAboard/commentWrite.jsp").forward(req, resp);		
-			
-	}
+		req.getRequestDispatcher("/WEB-INF/views/qnaboard/comment.jsp").forward(req, resp);
+    	
+    }
 
-	
 }

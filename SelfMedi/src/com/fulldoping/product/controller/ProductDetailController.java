@@ -37,9 +37,9 @@ public class ProductDetailController extends HttpServlet {
 
 		
 		List<Map<String, Object>> nikList = productService.getNutirentInfoWithKind(productList);
-		for( Map m : nikList ) {
-			System.out.println(m);
-		}
+//		for( Map<String, Object> m : nikList ) {
+//			System.out.println(m);
+//		}
 		
 		req.setAttribute("productInfo", productList);
 		req.setAttribute("nikList", nikList);

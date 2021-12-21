@@ -9,18 +9,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fulldoping.admin.free.paging.AdFreePaging;
+import com.fulldoping.admin.free.service.face.AdFreeService;
+import com.fulldoping.admin.free.service.impl.AdFreeServiceImpl;
 import com.fulldoping.free.dto.Free;
-import com.fulldoping.free.service.face.FreeService;
-import com.fulldoping.free.service.impl.FreeServiceImpl;
-import com.fulldoping.paging.Paging;
-
 
 @WebServlet("/ad/free/list")
 public class AdFreeListController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	//FreeService 객체생성
-	private FreeService freeService = new FreeServiceImpl();
+	private AdFreeService adFreeService = new AdFreeServiceImpl();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,19 +27,18 @@ public class AdFreeListController extends HttpServlet {
 		System.out.println("[TEST] /ad/free/list [GET]");
 		
 		//요청파라미터를 전달하여 Paging객체 생성하기
-		Paging paging = freeService.getPaging(req);
-		
+		AdFreePaging adFreePaging = adFreeService.getPaging(req);		
 		//게시글 전체 조회
-		List<Free> freeList = freeService.getList(paging);
+		List<Free> adfreeList = adFreeService.getList(adFreePaging);
 		
 		//조회결과 MODEL값 전달
-		req.setAttribute("freeList", freeList);
+		req.setAttribute("adfreeList", adfreeList);
 	
 		//페이징 정보 MODEL값 전달
-		req.setAttribute("paging", paging);
+		req.setAttribute("paging", adFreePaging);
 		
 		//VIEW 지정 및 응답 - forward
-		req.getRequestDispatcher("/WEB-INF/views/admin/board/free/freelist.jsp").forward(req, resp);		
+		req.getRequestDispatcher("/WEB-INF/views/admin/free/list.jsp").forward(req, resp);		
 		
 	}
 }

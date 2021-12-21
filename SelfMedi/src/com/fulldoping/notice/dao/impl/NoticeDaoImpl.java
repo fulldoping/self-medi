@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fulldoping.common.JDBCTemplate;
-import com.fulldoping.free.dto.Free;
-import com.fulldoping.free.dto.FreeFile;
 import com.fulldoping.notice.dao.face.NoticeDao;
 import com.fulldoping.notice.dto.Notice;
+import com.fulldoping.notice.dto.NoticeComments;
 import com.fulldoping.notice.dto.NoticeFile;
-import com.fulldoping.paging.Paging;
+import com.fulldoping.notice.paging.NoticePaging;
 
 public class NoticeDaoImpl implements NoticeDao {
 
@@ -21,14 +20,14 @@ public class NoticeDaoImpl implements NoticeDao {
 	private ResultSet rs = null;
 	
 	@Override
-	public List<Notice> selectAll(Connection conn, Paging paging) {
+	public List<Notice> selectAll(Connection conn, NoticePaging paging) {
 		
 		//SQL 작성
 		String sql = "";
 		sql += "SELECT * FROM ( ";
 		sql += "	SELECT rownum rnum, B.* FROM (";
 		sql += "		SELECT";
-		sql += "			boardNo, userId, boardTitle";
+		sql += "			boardNo, userId, userNick, boardTitle";
 		sql += "			, boardDate, hit";
 		sql += "		FROM notice";
 		sql += "		ORDER BY boardNo DESC";
@@ -54,9 +53,11 @@ public class NoticeDaoImpl implements NoticeDao {
 				
 				notice.setBoardNo( rs.getInt("boardNo"));
 				notice.setUserId( rs.getString("userId"));
+				notice.setUserNick( rs.getString("userNick"));
 				notice.setBoardTitle( rs.getString("boardTitle"));
 				notice.setBoardDate( rs.getDate("boardDate"));
 				notice.setHit( rs.getInt("hit"));
+				
 				
 				//리스트에 결과값 저장
 				noticeList.add(notice);				
@@ -242,21 +243,239 @@ public class NoticeDaoImpl implements NoticeDao {
 				
 		return noticeFile;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public List<NoticeComments> selectAllComments(Connection connection, int boardnum) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM NOTICECOMMENTS";
+		sql += " WHERE boardno = ?";
+		sql += " ORDER BY commentno DESC";
+		
+		//결과 저장할 List
+		List<NoticeComments> commentList = new ArrayList<>();
+		
+		try {
+			ps = connection.prepareStatement(sql); //SQL수행 객체
+			ps.setInt(1, boardnum);
+			
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				NoticeComments q = new NoticeComments(); //결과값 저장 객체
+				
+				//결과값 한 행 처리
+				q.setCommentNo(rs.getInt("commentno"));
+				q.setBoardNo( rs.getInt("boardno") );
+				q.setUserNo(rs.getInt("userNo"));
+				q.setUserNick(rs.getString("userNick"));
+				q.setCommentContent(rs.getString("commentcontent"));
+				q.setCommentDate(rs.getDate("commentdate"));
+
+				//리스트에 결과값 저장
+				commentList.add(q);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		//최종 결과 반환
+		return commentList;
+	}
+
+	@Override
+	public int selectNextCommentno(Connection conn) {
+		String sql = "";
+		sql += "SELECT noticecomments_seq.nextval FROM dual";
+		
+		//결과 저장 변수
+		int nextCommentno = 0;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				nextCommentno = rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		return nextCommentno;
+	}
+
+	@Override
+	public String getUserNick(Connection conn, Integer attribute) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT usernick FROM member"; 
+		sql += " WHERE userno = ?";
+		
+		String userNick = null;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, attribute);
+			
+			rs = ps.executeQuery();
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				userNick = rs.getString("usernick");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		return userNick;
+	}
+
+	@Override
+	public int commentsinsert(Connection conn, NoticeComments comment) {
+		String sql = "";
+		sql += "INSERT INTO NOTICECOMMENTS(COMMENTNO, BOARDNO, USERNO, USERNICK, COMMENTCONTENT, COMMENTDATE)";
+		sql += " VALUES (?, ?, ?, ?,?, SYSDATE)";
+				
+		int res = 0;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			
+			ps.setInt(1, comment.getCommentNo());
+			ps.setInt(2, comment.getBoardNo());
+			ps.setInt(3, comment.getUserNo());
+			ps.setString(4, comment.getUserNick());
+			ps.setString(5, comment.getCommentContent());
+			
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+
+	@Override
+	public NoticeComments selectcommentBycommentno(Connection conn, NoticeComments comment) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM noticecomments";
+		sql += " WHERE commentno = ?";
+		
+		//결과 저장할 Board객체
+		NoticeComments viewcomment = null;
+		
+		try {
+			ps = conn.prepareStatement(sql); //SQL수행 객체
+			
+			ps.setInt(1, comment.getCommentNo()); //조회할 게시글 번호 적용
+			
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				viewcomment = new NoticeComments(); //결과값 저장 객체
+				
+				//결과값 한 행 처리
+				//결과값 한 행 처리
+				viewcomment.setCommentNo( rs.getInt("commentno") );
+				viewcomment.setBoardNo( rs.getInt("boardno") );
+				viewcomment.setUserNo(rs.getInt("userNo"));
+				viewcomment.setUserNick(rs.getString("userNick"));
+				viewcomment.setCommentContent(rs.getString("commentcontent"));
+				viewcomment.setCommentDate(rs.getDate("commentdate"));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		//최종 결과 반환
+		return viewcomment;
+	}
+
+	@Override
+	public int commentsupdate(Connection conn, NoticeComments comment) {
+		//다음 댓글 번호 조회 쿼리
+		String sql = "";
+		sql += "UPDATE NOTICECOMMENTS";
+		sql += " SET COMMENTCONTENT=?, COMMENTDATE=SYSDATE"; 
+		sql += " WHERE COMMENTNO=?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, comment.getCommentContent());
+			ps.setInt(2, comment.getCommentNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+
+	@Override
+	public int commentsdelete(Connection conn, NoticeComments comment) {
+		//다음 댓글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE noticecomments";
+		sql += " WHERE commentno = ?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, comment.getCommentNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
 }

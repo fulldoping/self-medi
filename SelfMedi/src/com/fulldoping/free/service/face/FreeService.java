@@ -5,8 +5,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.fulldoping.free.dto.Free;
+import com.fulldoping.free.dto.FreeComments;
 import com.fulldoping.free.dto.FreeFile;
-import com.fulldoping.paging.Paging;
+import com.fulldoping.free.paging.FreePaging;
 
 public interface FreeService {
 
@@ -17,7 +18,7 @@ public interface FreeService {
 	 * @param paging - 페이징 정보 객체
 	 * @return List<Free> - 게시글 전체 조회 결과 리스트
 	 */
-	public List<Free> getList(Paging paging);
+	public List<Free> getList(FreePaging paging);
 	
 	/**
 	 * 페이징 객체 생성
@@ -28,7 +29,7 @@ public interface FreeService {
 	 * @param req - 요청정보 객체
 	 * @return 페이징 계산이 완료된 Paging 객체
 	 */
-	public Paging getPaging(HttpServletRequest req);
+	public FreePaging getPaging(HttpServletRequest req);
 
 	/**
 	 * 요청파라미터 얻기
@@ -97,6 +98,20 @@ public interface FreeService {
 	 */
 	
 	public void declare(HttpServletRequest req);
+
+	public int commentInsert(HttpServletRequest req);
+
+	public FreeComments getCommentno(HttpServletRequest req);
+
+	public 	FreeComments getUpdateComment(HttpServletRequest req);
+
+	public 	FreeComments getComment(int commentno);
+
+	public 	void commentUpdate(HttpServletRequest req);
+
+	public 	void commentDelete(FreeComments comment);
+
+	public List<FreeComments> getCommentList(int boardNo);
 
 
 	

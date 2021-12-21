@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fulldoping.admin.free.paging.AdFreePaging;
 import com.fulldoping.free.dto.Free;
 import com.fulldoping.free.dto.FreeFile;
-import com.fulldoping.paging.Paging;
 
 public interface AdFreeService {
 
@@ -16,7 +16,7 @@ public interface AdFreeService {
 	 * @param paging - 페이징 정보 객체
 	 * @return List<Free> - 게시글 전체 조회 결과 리스트
 	 */
-	public List<Free> getList(Paging paging);
+	public List<Free> getList(AdFreePaging adFreePaging);
 
 	/**
 	 * 페이징 객체 생성
@@ -27,7 +27,7 @@ public interface AdFreeService {
 	 * @param req - 요청정보 객체
 	 * @return 페이징 계산이 완료된 Paging 객체
 	 */
-	public Paging getPaging(HttpServletRequest req);
+	public AdFreePaging getPaging(HttpServletRequest req);
 	
 	/**
 	 * 요청파라미터 얻기

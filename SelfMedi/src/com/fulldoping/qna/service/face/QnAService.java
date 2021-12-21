@@ -1,13 +1,13 @@
-package com.fulldoping.qna.service.face;
+package com.fulldoping.QnA.service.face;
 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fulldoping.qna.dto.QnA;
-import com.fulldoping.qna.dto.QnAComments;
-import com.fulldoping.qna.dto.QnAFile;
-import com.fulldoping.qna.paging.Paging;
+import com.fulldoping.QnA.dto.QnA;
+import com.fulldoping.QnA.dto.QnAComments;
+import com.fulldoping.QnA.dto.QnAFile;
+import com.fulldoping.QnA.paging.Paging;
 
 public interface QnAService {
 	/**
@@ -99,13 +99,31 @@ public interface QnAService {
 	 * 
 	 * @return List<Board> - 게시글 전체 조회 결과 리스트
 	 */
-	public List<QnAComments> getCommentList();
+	public List<QnAComments> getCommentList(int boardno);
+	
+	/**
+	 * 요청파라미터 얻기
+	 * 
+	 * @param req - 요청정보객체
+	 * @return Board - 전달파라미터 boardno를 포함한 객체
+	 */
+	public QnAComments getCommentno(HttpServletRequest req);
+
+	public QnAComments getUpdateComment(HttpServletRequest req);
+	
+	/**
+	 * 요청파라미터 얻기
+	 * 
+	 * @param req - 요청정보객체
+	 * @return Board - 전달파라미터 boardno를 포함한 객체
+	 */
+	public QnAComments getComment(int commentno);
 	
 	/**
 	 * 댓글 작성
 	 * 	입력한 댓글 내용을 DB에 저장
 	 */
-	public void commentInsert(HttpServletRequest req);
+	public int commentInsert(HttpServletRequest req);
 	
 	/**
 	 * 댓글 수정
@@ -125,5 +143,7 @@ public interface QnAService {
 	 * @param req - 요청 정보 객체
 	 */
 	public void declare(HttpServletRequest req);
+
+
 
 }

@@ -14,48 +14,13 @@ import com.fulldoping.product.dto.NutrientKind;
 import com.fulldoping.product.dto.ProductInfo;
 import com.fulldoping.product.dto.SymptomCode;
 import com.fulldoping.product.service.face.ProductService;
-import com.fulldoping.util.Paging;
 import com.fulldoping.util.PagingProduct;
-
 
 public class ProductServiceImpl implements ProductService {
 
 	//BoardDao 객체 생성
 	private ProductDao productDao = new ProductDaoImpl();
-
-
-
-
-
-	@Override
-	public List<CompBasket> getBasketList(int userNo) {
-
-		return productDao.selectByuserNo(JDBCTemplate.getConnection(),userNo);
-	}
-
-
-	@Override
-	public List<ProductInfo> getProductList(List<CompBasket> basketList) {
-
-		return productDao.selectBasketProductInfo(JDBCTemplate.getConnection(),basketList);
-	}
-
-	@Override
-	public List<ProductInfo> getProductInfo(long[] productId) {
-
-		List<ProductInfo> ProductInfo = productDao.SelectProductInfo(JDBCTemplate.getConnection(),productId);
-
-
-
-		return ProductInfo;
-	}
-
-
-	@Override
-	public List<Map<String, Object>> getNutirentInfoWithKind(long[] productsId) {
-		return productDao.selectNutirentInfoWithKind(JDBCTemplate.getConnection(), productsId);
-	}
-
+	
 
 	@Override
 	public List<ProductInfo> getAllProduct(PagingProduct paging) {
@@ -169,8 +134,8 @@ public class ProductServiceImpl implements ProductService {
 
 
 	@Override
-	public List<Map<String, Object>> getNutirentInfoWithKind(ProductInfo productList) {
-		return productDao.selectNutirentInfoWithKind(JDBCTemplate.getConnection(), productList);
+	public List<Map<String, Object>> getNutirentInfoWithKind(long[] productsId) {
+	   return productDao.selectNutirentInfoWithKind(JDBCTemplate.getConnection(),productsId);
 	}
 
 	@Override
@@ -180,7 +145,7 @@ public class ProductServiceImpl implements ProductService {
 		String paramProductId = req.getParameter("productId");
 		long productId = Long.parseLong(paramProductId);
 
-		int userNo = (int ) req.getSession().getAttribute("userNo");
+		int userNo = (int) req.getSession().getAttribute("userNo");
 
 		int res = productDao.insertBasket(JDBCTemplate.getConnection(), productId, userNo);
 
@@ -195,4 +160,78 @@ public class ProductServiceImpl implements ProductService {
 
 
 	}
+	
+	//--------------------위 상품진열관련/ 아래 보관함 관련------------------
+	
+	
+	@Override
+	public List<CompBasket> getBasketList(int userNo) {
+		
+		return productDao.selectByuserNo(JDBCTemplate.getConnection(),userNo);
+	}
+
+
+	@Override
+	public List<ProductInfo> getProductList(List<CompBasket> basketList) {
+		
+		return productDao.selectBasketProductInfo(JDBCTemplate.getConnection(),basketList);
+	}
+
+	@Override
+	public List<ProductInfo> getProductInfo(long[] productId) {
+		
+		List<ProductInfo> ProductInfo = productDao.SelectProductInfo(JDBCTemplate.getConnection(),productId);
+		
+		
+		
+		return ProductInfo;
+	}
+
+
+
+	@Override
+	public void delete(String productId) {
+		Connection conn = JDBCTemplate.getConnection();
+		
+		if( productDao.deleteBasket(conn, productId) > 0 ) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+	}
+
+	   @Override
+	   public List<Map<String, Object>> getNutirentInfoWithKind(ProductInfo productList) {
+	      return productDao.selectNutirentInfoWithKind(JDBCTemplate.getConnection(), productList);
+	   }
+
+	@Override
+	public List<Map<String, Object>> getNutirentInfoWithKind(String productId) {
+		return productDao.selectNutirentInfoWithKind(JDBCTemplate.getConnection(), productId);
+	}
+
+	@Override
+	public List<Map<String, Object>> getNutirentInfoWithKind(long productId) {
+		return productDao.selectNutirentInfoWithKind(JDBCTemplate.getConnection(), productId);
+	}
+
+	@Override
+	public List<Map<String, Object>> getNutinfo(long[] productsId) {
+		return productDao.SelectNutInfo(JDBCTemplate.getConnection(), productsId);
+	}
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
 }

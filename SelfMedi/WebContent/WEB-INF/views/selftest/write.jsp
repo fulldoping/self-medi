@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 
-<c:import url="/WEB-INF/views/layout/header.jsp" />
+<c:import url="/WEB-INF/views/layout/headerbs.jsp" />
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -21,15 +21,9 @@ $(document).ready(function() {
 </script>
 
 <style type="text/css">
-table {
-	margin:auto;
-}
-
-.tg  {
-	border-collapse:collapse;
-	border-spacing:0;
-}
-
+#selftestcontainer{text-align: center;}
+table {margin:auto;}
+.tg  {border-collapse:collapse;border-spacing:0;}
 .tg td {
 	border-style:solid;
 	border-width:0px;
@@ -39,35 +33,17 @@ table {
   	padding:5px 10px;
  	word-break:normal;
 }
+.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+.tg .tg-0pkyt{border-color:inherit;text-align:left;vertical-align:top;font-size: 15px;font-weight: bold;}
 
-.tg .tg-c3ow{
-	border-color:inherit;
-	text-align:center;
-	vertical-align:top
-}
-.tg .tg-0pky{
-	border-color:inherit;
-	text-align:left;
-	vertical-align:top
-}
-
-.tg .tg-0pkyt{
-	border-color:inherit;
-	text-align:left;
-	vertical-align:top;
-	font-size: 15px;
-	font-weight: bold;
-}
-
-.question{
-	display: inline;
-}
+.question{display:inline;}
 
 </style>
 
-<div id="container">
+<div id="selftestcontainer">
 
-<h1><b>자가진단서 작성</b></h1>
+<h1 style="color:#345EE6;"><b>자가진단서 작성</b></h1>
 <hr>
 
 <form action="<%=request.getContextPath() %>/selftest/write" method="post">
@@ -253,8 +229,8 @@ omega3 오메가3
 <br>
  --%>
 
-	<button type="reset" id="btnCancel">취소</button>
-	<button type="button" id="btnWrite">작성</button>
+	<button type="reset" id="btnCancel" class="btn btn-info btn-sm">취소</button>
+	<button type="button" id="btnWrite" class="btn btn-primary btn-sm">작성</button>
 
 </form>
 

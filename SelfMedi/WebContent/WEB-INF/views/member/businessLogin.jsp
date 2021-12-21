@@ -3,7 +3,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:import url="/WEB-INF/views/layout/header.jsp" />
+<c:import url="/WEB-INF/views/layout/headerbs.jsp" />
 
 <script type="text/javascript"
 	src="<%=request.getContextPath() %> /resources/js/httpRequest.js">
@@ -26,61 +26,81 @@ $(document).ready(function() {
       $(this).parents("form").submit();
    })
    
-   //취소 버튼 누르면 뒤로가기
-   $("#btnCancel").click(function() {
-      history.go(-1);
-   })
-
+//    //취소 버튼 누르면 뒤로가기
+//    $("#btnCancel").click(function() {
+//       history.go(-1);
+//    })
 });
 </script>
 
 <style type="text/css">
+#container {
+	padding: 0px 0px 120px;
+}
+
 form {
    width: 400px;
    margin: 0 auto;
+}
+
+.memberJoin {
+    width: 640px;
+    margin: 0 auto;
 }
 </style>
 
 
 <div class="container">
 
-<h2 class="text-center">사업자 로그인</h2>
-<hr>
+<div class="pageAticle">
+<div class="typeForm businessLogin">
 
-<form action="/member/login" method="post">
-    
-<div>
-	<label for="userId">아이디</label>
-	<div>
-	<input type="text" id="userId" name="userId" />
-	</div>
-</div>
-  
-<div>
-	<label for="userPw">패스워드</label>
-	<div>
-	<input type="text" id="userPw" name="userPw" />
-	</div>
+
+<form id="form" action="/member/businesslogin" method="post">
+
+<div class="titPage">
+	<h2 class="title">사업자 로그인</h2>
+	<hr>
 </div>
 
-<%-- 	
-<div>
-	<label><a href="<%=request.getContextPath()%>"/>아이디찾기</a> | </label>
-	<label><a href="<%=request.getContextPath()%>"/>비밀번호 찾기</a> | </label> 
-	<label><a href="<%=request.getContextPath()%>/member/businessjoin">회원가입</a></label>
-</div>
---%>
+<table class="table">
+
+<thead>
+	<tr class="usrId">
+		<th class="usrId">아이디</th>
+		<td>
+		<input type="text" id="userId" name="userId" />
+		</td>
+	</tr>
+
+	<tr class="usrPw">
+		<th class="usrPw">비밀번호</th>
+		<td>
+		<input type="text" id="usrPw" name="usrPw" />
+		</td>
+	</tr>
+</thead>
+
+<tbody>
+	<tr>
+		<td><a href="<%=request.getContextPath()%>/member/finduserid">아이디찾기</a> | </td>
+		<td><a href="<%=request.getContextPath()%>/member/finduserpw">비밀번호 찾기</a> | </td> 
+		<td><a href="<%=request.getContextPath()%>/member/businessjoin">회원가입</a></td>
+	</tr> 
+</tbody>
+</table>
 
 <div>
 	<label for="btnLogin"></label>
-	<div>
-	<button type="button" id="btnLogin">로그인</button>
+	<div class="formFooter">
+		<button type="button" id="btnLogin">로그인</button>
 	</div>
 </div>
-   
+
 </form>
 
-<!-- .container -->
 </div>
+</div><!-- .pageAticle -->
+</div><!-- .container -->
 
 <c:import url="/WEB-INF/views/layout/footer.jsp" />

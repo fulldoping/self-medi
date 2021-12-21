@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import com.fulldoping.admin.product.dao.face.AdProductDao;
+import com.fulldoping.admin.product.paging.AdProductPaging;
 import com.fulldoping.common.JDBCTemplate;
 import com.fulldoping.product.dto.NutrientInfo;
 import com.fulldoping.product.dto.NutrientKind;
@@ -16,7 +18,6 @@ import com.fulldoping.product.dto.SymptomCode;
 import com.fulldoping.product.dto.SymptomInfo;
 import com.fulldoping.product.dto.TargetCode;
 import com.fulldoping.product.dto.TargetInfo;
-import com.fulldoping.util.Paging;
 
 
 
@@ -54,7 +55,7 @@ public class AdProductDaoImpl implements AdProductDao{
 	}
 
 	@Override
-	public List<ProductInfo> selectAllProduct(Connection conn, Paging paging) {
+	public List<ProductInfo> selectAllProduct(Connection conn, AdProductPaging paging) {
 
 		//SQL작성
 		String sql = "";
@@ -343,6 +344,229 @@ public class AdProductDaoImpl implements AdProductDao{
 				//최종 결과 반환
 				return res;
 	}
+
+	@Override
+	public ProductInfo selectProductInfo(Connection conn, long productId) {
+		String sql = "";
+		sql += "SELECT * FROM ProductInfo";
+		sql += " WHERE productid = ?";
+		
+		ProductInfo productInfo = null;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setLong(1, productId);
+
+			rs = ps.executeQuery();
+
+			rs.next();
+			
+				productInfo = new ProductInfo();
+
+				productInfo.setProductId( rs.getLong("productId") );
+				productInfo.setProductName( rs.getString("productName") );
+				productInfo.setManuCom( rs.getString("manuCom") );
+				productInfo.setType( rs.getString("type") );
+				productInfo.setImage( rs.getString("image") );
+				productInfo.setPurchaseLink( rs.getString("purchaseLink") );
+				productInfo.setAllergyInfo( rs.getString("allergyInfo") );
+				productInfo.setStarScore( rs.getString("starScore") );
+
+				//리스트에 결과값 저장
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+
+		return productInfo;
+	}
+
+	@Override
+	public int selectTargetInfo(Connection conn, long productId) {
+		String sql = "";
+		sql += "SELECT * FROM TargetInfo";
+		sql += " WHERE productid = ?";
+		
+		int targetId = 0;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setLong(1, productId);
+
+			rs = ps.executeQuery();
+
+			while(rs.next()) {
+				
+				targetId =rs.getInt("targetId");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+
+		return targetId;
+	}
+
+	@Override
+	public List<SymptomInfo> selectSymtomInfo(Connection conn, long productId) {
+		
+		String sql = "";
+		sql += "SELECT * FROM SymptomInfo";
+		sql += " WHERE productid = ?";
+		
+		List<SymptomInfo> symptomList = new ArrayList<>(); //Board = dto boardList = 객체이름, 반환객체
+
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setLong(1, productId);
+
+			rs = ps.executeQuery();
+
+			while(rs.next()) {
+				SymptomInfo symptomInfo = new SymptomInfo();
+
+				symptomInfo.setSymptomId( rs.getInt("symptomId") );
+
+				//리스트에 결과값 저장
+				symptomList.add(symptomInfo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+
+		return symptomList;
+	}
+
+	@Override
+	public List<NutrientInfo> selectNutrientInfo(Connection conn, long productId) {
+		
+		String sql = "";
+		sql += "SELECT * FROM NutrientInfo";
+		sql += " WHERE productid = ?";
+		
+		List<NutrientInfo> symptomList = new ArrayList<>(); //Board = dto boardList = 객체이름, 반환객체
+
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setLong(1, productId);
+
+			rs = ps.executeQuery();
+
+			while(rs.next()) {
+				NutrientInfo nutrientInfo = new NutrientInfo();
+
+				nutrientInfo.setNutId( rs.getInt("nutId") );
+				nutrientInfo.setNutContent( rs.getString("nutContent") );
+
+				//리스트에 결과값 저장
+				symptomList.add(nutrientInfo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+
+		return symptomList;
+	}
+
+	@Override
+	public int updateProductInfo(Connection conn, ProductInfo productInfo) {
+		
+		String sql = "";
+		sql += "UPDATE productInfo SET";
+		sql += " type = ?, image = ? , purchaselink = ? , allergyinfo = ?";
+		sql += " WHERE productid = ?";
+		int res = 0;
+
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, productInfo.getType());
+			ps.setString(2, productInfo.getImage());
+			ps.setString(3, productInfo.getPurchaseLink());
+			ps.setString(4, productInfo.getAllergyInfo());
+			ps.setLong(5, productInfo.getProductId());
+
+			res = ps.executeUpdate();
+
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			JDBCTemplate.close(ps);
+		}
+		return res;
+	}
+
+	@Override
+	public int updateTargetInfo(Connection conn, TargetInfo targetInfo) {
+		String sql = "";
+		sql += "UPDATE TargetInfo SET";
+		sql += " targetid = ?";
+		sql += " WHERE productid = ?";
+		int res = 0;
+
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, targetInfo.getTargetId());
+			ps.setLong(2, targetInfo.getProductId());
+
+			res = ps.executeUpdate();
+
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			JDBCTemplate.close(ps);
+		}
+		return res;
+	}
+
+	@Override
+	public int updateSymptomInfo(Connection conn, List<SymptomInfo> symptomInfo1) {
+		String sql = "";
+		sql += "UPDATE SymptomInfo SET";
+		sql += " SymptomId = ?";
+		sql += " WHERE productid = ?";
+
+		int res = 0;
+
+		for(int i = 0; i<symptomInfo1.size(); i++) {
+			try {
+
+				ps = conn.prepareStatement(sql); //SQL수행 객체
+				ps.setInt(1, symptomInfo1.get(i).getSymptomId());
+				ps.setLong(2, symptomInfo1.get(i).getProductId());
+
+				res = ps.executeUpdate(); //SQL 수행 및 결과집합 저장
+
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				//DB객체 닫기
+				JDBCTemplate.close(rs);
+				JDBCTemplate.close(ps);
+			}
+		}
+		//최종 결과 반환
+		return res;
+	}
+
 
 	@Override
 	public int deleteProductTargetInfo(Connection conn, long productId) {

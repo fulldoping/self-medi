@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fulldoping.free.dto.Free;
 import com.fulldoping.notice.dto.Notice;
+import com.fulldoping.notice.dto.NoticeComments;
 import com.fulldoping.notice.dto.NoticeFile;
-import com.fulldoping.paging.Paging;
+import com.fulldoping.notice.paging.NoticePaging;
 
 public interface NoticeService {
 
@@ -20,7 +20,7 @@ public interface NoticeService {
 	 * @param req - 요청정보 객체
 	 * @return 페이징 계산이 완료된 Paging 객체
 	 */
-	public Paging getPaging(HttpServletRequest req);
+	public NoticePaging getPaging(HttpServletRequest req);
 
 	/**
 	 *  페이징 처리 추가 된 게시글 전체 조회
@@ -29,7 +29,7 @@ public interface NoticeService {
 	 * @param paging - 페이징 정보 객체
 	 * @return list<Notice> - 게시글 전체 조회 결과 리스트
 	 */
-	public List<Notice> getList(Paging paging);
+	public List<Notice> getList(NoticePaging paging);
 
 	/**
 	 * 요청 파라미터 얻기
@@ -62,6 +62,22 @@ public interface NoticeService {
 	 * @return NoticeFile - 첨부파일 정보 DTO객체
 	 */
 	public NoticeFile viewFile(Notice viewNotice);
+
+	
+	//댓글
+	public List<NoticeComments> getCommentList(int boardNo);
+
+	public void commentDelete(NoticeComments comment);
+
+	public void commentUpdate(HttpServletRequest req);
+
+	public int commentInsert(HttpServletRequest req);
+	
+	public NoticeComments getCommentno(HttpServletRequest req);
+	
+	public NoticeComments getUpdateComment(HttpServletRequest req);
+	
+	public NoticeComments getComment(int commentno);
 
 	
 

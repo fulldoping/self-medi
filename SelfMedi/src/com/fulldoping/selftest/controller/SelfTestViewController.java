@@ -1,6 +1,7 @@
 package com.fulldoping.selftest.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +24,19 @@ public class SelfTestViewController extends HttpServlet {
 		
 		//테스트코드 - 추후 주석처리
 		System.out.println("/selftest/view [GET]");
+		
+		resp.setCharacterEncoding("UTF-8");
+		
+		PrintWriter out = resp.getWriter();
+		//로그인 되어있지 않으면 리다이렉트 
+		if( req.getSession().getAttribute("login") == null
+				|| !(boolean)req.getSession().getAttribute("login") ) {
+			out.println("로그인이 필요합니다.");
+			req.getRequestDispatcher("/WEB-INF/views/notlogin.jsp").forward(req, resp);
+//			resp.sendRedirect("/");
+
+			return;
+		}
 		
 		//클라이언트의 동작으로 부터 진단서 번호 전달파라미터 얻기 -> DTO타입으로 저장
 		SelfTest selftestno = selfTestService.getTestno(req);

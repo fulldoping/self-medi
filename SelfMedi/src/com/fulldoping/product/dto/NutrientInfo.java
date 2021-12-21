@@ -26,7 +26,5 @@ public class NutrientInfo {
 	public void setNutContent(String nutContent) {
 		this.nutContent = nutContent;
 	}
-	
-	
 
 }

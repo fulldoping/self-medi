@@ -10,9 +10,10 @@ import java.util.List;
 import com.fulldoping.common.JDBCTemplate;
 import com.fulldoping.free.dao.face.FreeDao;
 import com.fulldoping.free.dto.Free;
+import com.fulldoping.free.dto.FreeComments;
 import com.fulldoping.free.dto.FreeDeclare;
 import com.fulldoping.free.dto.FreeFile;
-import com.fulldoping.paging.Paging;
+import com.fulldoping.free.paging.FreePaging;
 
 public class FreeDaoImpl implements FreeDao {
 
@@ -51,14 +52,14 @@ public class FreeDaoImpl implements FreeDao {
 	}
 
 	@Override
-	public List<Free> selectAll(Connection conn, Paging paging) {
+	public List<Free> selectAll(Connection conn, FreePaging paging) {
 		
 		//SQL작성
 		String sql = "";
 		sql += "SELECT * FROM ( ";
 		sql += "	SELECT rownum rnum, B.* FROM (";
 		sql += "		SELECT";
-		sql += "			boardNo, userId, boardTitle";
+		sql += "			boardNo, userId, userNick, boardTitle";
 		sql += "			, boardDate, hit";
 		sql += "		FROM free";
 		sql += "		ORDER BY boardNo DESC";
@@ -82,6 +83,7 @@ public class FreeDaoImpl implements FreeDao {
 				
 				free.setBoardNo( rs.getInt("boardNo"));
 				free.setUserId( rs.getString("userId"));
+				free.setUserNick( rs.getString("userNick"));
 				free.setBoardTitle( rs.getString("boardTitle"));
 				free.setBoardDate( rs.getDate("boardDate"));
 				free.setHit( rs.getInt("hit"));
@@ -153,6 +155,7 @@ public class FreeDaoImpl implements FreeDao {
 				viewFree.setBoardNo( rs.getInt("boardNo"));
 				viewFree.setUserNo( rs.getInt("userNo"));
 				viewFree.setUserId( rs.getString("userId"));
+				viewFree.setUserNick( rs.getString("userNick"));
 				viewFree.setBoardTitle( rs.getString("boardTitle"));
 				viewFree.setBoardDate( rs.getDate("boardDate"));
 				viewFree.setBoardContent( rs.getString("BoardContent"));
@@ -247,8 +250,8 @@ public class FreeDaoImpl implements FreeDao {
 		System.out.println("TESTFREE : "+ free);
 		//다음 게시글 번호 조회 쿼리
 		String sql = "";
-		sql += "INSERT INTO free(BOARDNO , USERNO, USERID , BOARDTITLE , BOARDCONTENT,  HIT)";
-		sql += " VALUES (?, ?, ?, ?, ?, 0)";
+		sql += "INSERT INTO free(BOARDNO , USERNO, USERID , BOARDTITLE , BOARDCONTENT,  HIT, userNick)";
+		sql += " VALUES (?, ?, ?, ?, ?, 0, ?)";
 		
 		int res = 0;
 		
@@ -261,6 +264,8 @@ public class FreeDaoImpl implements FreeDao {
 			ps.setString(3, free.getUserId());
 			ps.setString(4, free.getBoardTitle());
 			ps.setString(5, free.getBoardContent());
+			ps.setString(6, free.getUserNick());
+			
 			
 			res = ps.executeUpdate();
 			
@@ -437,28 +442,26 @@ public class FreeDaoImpl implements FreeDao {
 	@Override
 	public int deleteFile(Connection conn, Free free) {
 		
-		System.out.println("TESTFREE : "+ free);
 		//다음 게시글 번호 조회 쿼리
 		String sql = "";
-		sql += "INSERT INTO free(BOARDNO , USERNO, USERID , BOARDTITLE , BOARDCONTENT,  HIT)";
-		sql += " VALUES (?, ?, ?, ?, ?, 0)";
+		sql += "DELETE freefile";
+		sql += " WHERE boardno = ?";
 		
-		int res = 0;
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
 		
 		try {
 			//DB작업
 			ps = conn.prepareStatement(sql);
-			
 			ps.setInt(1, free.getBoardNo());
-			ps.setInt(2, free.getUserNo());
-			ps.setString(3, free.getUserId());
-			ps.setString(4, free.getBoardTitle());
-			ps.setString(5, free.getBoardContent());
-			
+
 			res = ps.executeUpdate();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			
 		} finally {
 			JDBCTemplate.close(ps);
 		}
@@ -471,8 +474,8 @@ public class FreeDaoImpl implements FreeDao {
 		
 		//다음 게시글 번호 조회 쿼리
 		String sql = "";
-		sql += "INSERT INTO freedeclare(BOARDNO , USERNO, USERID , BOARDTITLE , BOARDCONTENT, REASON)";
-		sql += " VALUES (?, ?, ?, ?, ?, ?)";
+		sql += "INSERT INTO freeDeclare(BOARDNO , USERNO, USERID , BOARDTITLE , BOARDCONTENT, REASON, USERNICK, HIT)";
+		sql += " VALUES ( ? , ?, ?, ?, ?, ?, ?, ?)";
 		
 		int res = 0;
 		
@@ -486,7 +489,126 @@ public class FreeDaoImpl implements FreeDao {
 			ps.setString(4, freeDeclare.getBoardTitle());
 			ps.setString(5, freeDeclare.getBoardContent());
 			ps.setString(6, freeDeclare.getReason());
+			ps.setString(7, freeDeclare.getUserNick());
+			ps.setInt(8, freeDeclare.getHit());
 			
+			res = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+	
+	@Override
+	public List<FreeComments> selectAllComments(Connection conn) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM FREECOMMENTS";
+		sql += " ORDER BY boardno DESC";
+		
+		//결과 저장할 List
+		List<FreeComments> commentList = new ArrayList<>();
+		
+		try {
+			ps = conn.prepareStatement(sql); //SQL수행 객체
+			
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				FreeComments q = new FreeComments(); //결과값 저장 객체
+				
+				//결과값 한 행 처리
+				q.setCommentNo(rs.getInt("commentno"));
+				q.setBoardNo( rs.getInt("boardno") );
+				q.setUserNo(rs.getInt("userNo"));
+				q.setUserNick(rs.getString("userNick"));
+				q.setCommentContent(rs.getString("commentcontent"));
+				q.setCommentDate(rs.getDate("commentdate"));
+				
+				//리스트에 결과값 저장
+				commentList.add(q);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		//최종 결과 반환
+		return commentList;
+	}
+	
+	@Override
+	public List<FreeComments> selectAllComments(Connection conn, int boardno) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM FREECOMMENTS";
+		sql += " WHERE boardno = ?";
+		sql += " ORDER BY commentno DESC";
+		
+		//결과 저장할 List
+		List<FreeComments> commentList = new ArrayList<>();
+		
+		try {
+			ps = conn.prepareStatement(sql); //SQL수행 객체
+			ps.setInt(1, boardno);
+			
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				FreeComments q = new FreeComments(); //결과값 저장 객체
+				
+				//결과값 한 행 처리
+				q.setCommentNo(rs.getInt("commentno"));
+				q.setBoardNo( rs.getInt("boardno") );
+				q.setUserNo(rs.getInt("userNo"));
+				q.setUserNick(rs.getString("userNick"));
+				q.setCommentContent(rs.getString("commentcontent"));
+				q.setCommentDate(rs.getDate("commentdate"));
+
+				//리스트에 결과값 저장
+				commentList.add(q);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		//최종 결과 반환
+		return commentList;
+	}
+	
+	@Override
+	public int commentsinsert(Connection conn, FreeComments comment) {
+		String sql = "";
+		sql += "INSERT INTO FREECOMMENTS(COMMENTNO, BOARDNO, USERNO, USERNICK, COMMENTCONTENT, COMMENTDATE)";
+		sql += " VALUES (?, ?, ?, ?, ?, SYSDATE)";
+				
+		int res = 0;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			
+			ps.setInt(1, comment.getCommentNo());
+			ps.setInt(2, comment.getBoardNo());
+			ps.setInt(3, comment.getUserNo());
+			ps.setString(4, comment.getUserNick());
+			ps.setString(5, comment.getCommentContent());
+			
+
 			res = ps.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -496,6 +618,195 @@ public class FreeDaoImpl implements FreeDao {
 		}
 		
 		return res;
+	}
+	
+	@Override
+	public int selectNextCommentno(Connection conn) {
+		String sql = "";
+		sql += "SELECT freecomments_seq.nextval FROM dual";
+		
+		//결과 저장 변수
+		int nextCommentno = 0;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				nextCommentno = rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		return nextCommentno;
+	}
+	
+	@Override
+	public FreeComments selectcommentBycommentno(Connection conn, FreeComments commentno) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT * FROM freecomments";
+		sql += " WHERE commentno = ?";
+		
+		//결과 저장할 Board객체
+		FreeComments viewcomment = null;
+		
+		try {
+			ps = conn.prepareStatement(sql); //SQL수행 객체
+			
+			ps.setInt(1, commentno.getCommentNo()); //조회할 게시글 번호 적용
+			
+			rs = ps.executeQuery(); //SQL 수행 및 결과집합 저장
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				viewcomment = new FreeComments(); //결과값 저장 객체
+				
+				//결과값 한 행 처리
+				//결과값 한 행 처리
+				viewcomment.setCommentNo( rs.getInt("commentno") );
+				viewcomment.setBoardNo( rs.getInt("boardno") );
+				viewcomment.setUserNo(rs.getInt("userNo"));
+				viewcomment.setUserNick(rs.getString("userNick"));
+				viewcomment.setCommentContent(rs.getString("commentcontent"));
+				viewcomment.setCommentDate(rs.getDate("commentdate"));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			//DB객체 닫기
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		//최종 결과 반환
+		return viewcomment;
+	}
+	
+	@Override
+	public int commentsupdate(Connection conn, FreeComments comment) {
+		//다음 댓글 번호 조회 쿼리
+		String sql = "";
+		sql += "UPDATE FreeCOMMENTS";
+		sql += " SET COMMENTCONTENT=?, COMMENTDATE=SYSDATE"; 
+		sql += " WHERE COMMENTNO=?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, comment.getCommentContent());
+			ps.setInt(2, comment.getCommentNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+
+	@Override
+	public int commentsdelete(Connection conn, FreeComments comment) {
+		//다음 댓글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE freecomments";
+		sql += " WHERE commentno = ?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, comment.getCommentNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+	
+	@Override
+	public int commentsdelete(Connection conn, Free board) {
+		//다음 게시글 번호 조회 쿼리
+		String sql = "";
+		sql += "DELETE freecomments";
+		sql += " WHERE boardno = ?";
+		
+		//DB 객체
+		PreparedStatement ps = null; 
+		
+		int res = -1;
+		
+		try {
+			//DB작업
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, board.getBoardNo());
+
+			res = ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			JDBCTemplate.close(ps);
+		}
+		
+		return res;
+	}
+
+	@Override
+	public String getUserNick(Connection conn, Integer userNo) {
+		//SQL 작성
+		String sql = "";
+		sql += "SELECT usernick FROM member"; 
+		sql += " WHERE userno = ?";
+		
+		String userNick = null;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, userNo);
+			
+			rs = ps.executeQuery();
+			
+			//조회 결과 처리
+			while(rs.next()) {
+				userNick = rs.getString("usernick");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rs);
+			JDBCTemplate.close(ps);
+		}
+		
+		return userNick;
 	}
 }
 

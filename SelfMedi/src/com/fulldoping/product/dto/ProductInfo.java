@@ -63,7 +63,6 @@ public class ProductInfo {
 	public void setStarScore(String starScore) {
 		this.starScore = starScore;
 	}
-
 	
 	
 }

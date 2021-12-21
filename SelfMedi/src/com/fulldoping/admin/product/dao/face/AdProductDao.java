@@ -3,6 +3,8 @@ package com.fulldoping.admin.product.dao.face;
 import java.sql.Connection;
 import java.util.List;
 
+
+import com.fulldoping.admin.product.paging.AdProductPaging;
 import com.fulldoping.product.dto.NutrientInfo;
 import com.fulldoping.product.dto.NutrientKind;
 import com.fulldoping.product.dto.ProductInfo;
@@ -10,8 +12,6 @@ import com.fulldoping.product.dto.SymptomCode;
 import com.fulldoping.product.dto.SymptomInfo;
 import com.fulldoping.product.dto.TargetCode;
 import com.fulldoping.product.dto.TargetInfo;
-import com.fulldoping.product.dto.CompBasket;
-import com.fulldoping.util.Paging;
 
 public interface AdProductDao {
 
@@ -21,7 +21,7 @@ public interface AdProductDao {
 	 * @param conn
 	 * @return
 	 */
-	int selectCntAll(Connection conn);
+	public int selectCntAll(Connection conn);
 
 	
 	
@@ -33,7 +33,7 @@ public interface AdProductDao {
 	 * @param conn - DB연결 객체
 	 * @return List<ProductInfo> - productinfo테이블 전체 조회 결과 리스트
 	 */
-	List<ProductInfo> selectAllProduct(Connection conn, Paging paging);
+	public List<ProductInfo> selectAllProduct(Connection conn, AdProductPaging paging);
 
 
 
@@ -43,7 +43,7 @@ public interface AdProductDao {
 	 * @param connection
 	 * @return List<TargetCode>
 	 */
-	List<TargetCode> selectAllTargetCode(Connection conn);
+	public List<TargetCode> selectAllTargetCode(Connection conn);
 
 
 	/**
@@ -52,7 +52,7 @@ public interface AdProductDao {
 	 * @param connection
 	 * @return
 	 */
-	List<SymptomCode> selectAllSymptomCode(Connection conn);
+	public List<SymptomCode> selectAllSymptomCode(Connection conn);
 
 
 	/**
@@ -61,7 +61,7 @@ public interface AdProductDao {
 	 * @param conn
 	 * @return
 	 */
-	List<NutrientKind> selectAllNutrientKind(Connection conn);
+	public List<NutrientKind> selectAllNutrientKind(Connection conn);
 
 
 
@@ -72,7 +72,7 @@ public interface AdProductDao {
 	 * @param productInfo
 	 * @return
 	 */
-	int insertProductInfo(Connection connection, ProductInfo productInfo);
+	public int insertProductInfo(Connection connection, ProductInfo productInfo);
 
 
 	/**
@@ -82,7 +82,7 @@ public interface AdProductDao {
 	 * @param targetInfo
 	 * @return
 	 */
-	int insertTargetInfo(Connection connection, TargetInfo targetInfo);
+	public int insertTargetInfo(Connection connection, TargetInfo targetInfo);
 
 
 	/**
@@ -92,7 +92,7 @@ public interface AdProductDao {
 	 * @param symptomInfo
 	 * @return
 	 */
-	int insertSymptomInfo(Connection connection, List<SymptomInfo> symptomInfo);
+	public int insertSymptomInfo(Connection connection, List<SymptomInfo> symptomInfo);
 
 
 	/**
@@ -102,8 +102,72 @@ public interface AdProductDao {
 	 * @param nutrientInfo
 	 * @return
 	 */
-	int insertNutrientInfo(Connection connection, List<NutrientInfo> nutrientInfo);
+	public int insertNutrientInfo(Connection connection, List<NutrientInfo> nutrientInfo);
+	
+	/**
+	 * productId로 상품정보테이블 조회
+	 * 
+	 * @param connection - DB연결 객체
+	 * @param productId
+	 * @return List<ProductInfo> 
+	 */
+	public ProductInfo selectProductInfo(Connection conn, long productId);
 
+
+	/**
+	 * productId로 대상별정보테이블 조회
+	 * 
+	 * @param connection- DB연결 객체
+	 * @param productId
+	 * @return TargetInfo 대상별 정보
+	 */
+	public int selectTargetInfo(Connection conn, long productId);
+
+
+	/**
+	 * productId로 증상별정보테이블 조회
+	 * 
+	 * @param connection- DB연결 객체
+	 * @param productId
+	 * @return List<SymptomInfo> 증상별 정보
+	 */
+	public List<SymptomInfo> selectSymtomInfo(Connection conn, long productId);
+
+	/**
+	 * productId로 영양소정보테이블 조회
+	 * 
+	 * @param connection - DB연결 객체
+	 * @param productId
+	 * @return List<NutrientInfo> 영양소 정보
+	 */
+	public List<NutrientInfo> selectNutrientInfo(Connection conn, long productId);
+
+	/**
+	 *  ProductInfo 수정
+	 * 
+	 * @param conn - DB연결 객체
+	 * @param productInfo - 입력값
+	 * @return
+	 */
+	public int updateProductInfo(Connection conn, ProductInfo productInfo);
+
+	/**
+	 * TargetInfo 수정
+	 * 
+	 * @param conn - DB연결 객체
+	 * @param targetInfo - 입력값
+	 * @return
+	 */
+	public int updateTargetInfo(Connection conn, TargetInfo targetInfo);
+
+	/**
+	 * SymptomInfo 수정
+	 * 
+	 * @param conn - DB연결 객체
+	 * @param symptomInfo1 - 입력값
+	 * @return
+	 */
+	public int updateSymptomInfo(Connection conn, List<SymptomInfo> symptomInfo1);
 
 	/**
 	 * deleteProduct targetinfo delete

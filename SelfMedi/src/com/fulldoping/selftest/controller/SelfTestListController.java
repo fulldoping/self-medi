@@ -1,6 +1,8 @@
 package com.fulldoping.selftest.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+//import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -26,25 +28,40 @@ public class SelfTestListController extends HttpServlet {
 		//테스트코드 - 추후 주석처리
 		System.out.println("/selftest/list [GET]");
 		
-		//세션 영역에 있는 userNo를 가져온다.
+		resp.setCharacterEncoding("UTF-8");
+		
+		PrintWriter out = resp.getWriter();
+		//로그인 되어있지 않으면 리다이렉트 
+		if( req.getSession().getAttribute("login") == null
+				|| !(boolean)req.getSession().getAttribute("login") ) {
+			out.println("로그인이 필요합니다.");
+			req.getRequestDispatcher("/WEB-INF/views/notlogin.jsp").forward(req, resp);
+//			resp.sendRedirect("/");
+
+			return;
+		}
+		
+		// 세션 영역에 있는 userNo를 가져온다.
 		HttpSession session = req.getSession();
+
 		int userno = (int) session.getAttribute("userNo");
-		
-		//테스트코드 - 추후 주석처리
+
+		// 테스트코드 - 추후 주석처리
 		System.out.println("사용자 번호 테스트 : " + userno);
-		
-		//자가진단데이터 전체 조회
+
+		// 자가진단데이터 전체 조회
 		List<SelfTest> list = selfTestService.getList(userno);
-		
-		//테스트코드 - 추후 주석처리
-		for(SelfTest s : list) System.out.println(s);
-		
-		//조회결과 값 view에 전달
+
+		// 테스트코드 - 추후 주석처리
+		for (SelfTest s : list)
+			System.out.println(s);
+
+		// 조회결과 값 view에 전달
 		req.setAttribute("myList", list);
-		
-		//결과 조회 페이지로 이동
+
+		// 결과 조회 페이지로 이동
 		req.getRequestDispatcher("/WEB-INF/views/selftest/list.jsp").forward(req, resp);
-		
+
 	} //end doGet
 
 } //end Servlet
